@@ -30,7 +30,7 @@ public class ClubController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewCategory(
+    public ResponseEntity<?> addNewClub(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
             @RequestBody ClubModel clubData)

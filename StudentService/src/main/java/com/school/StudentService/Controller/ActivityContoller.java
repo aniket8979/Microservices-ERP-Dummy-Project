@@ -27,7 +27,7 @@ public class ActivityContoller {
 
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewHouse(
+    public ResponseEntity<?> addNewActivity(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
             @RequestBody ActivityModel activity) {
@@ -71,7 +71,7 @@ public class ActivityContoller {
 
 
     @GetMapping("/get")
-    public ResponseEntity<List<?>> getAllHouse(
+    public ResponseEntity<List<?>> getAllActivity(
             @RequestHeader("franchiseId") String franchiseId
     )
     {
@@ -81,7 +81,7 @@ public class ActivityContoller {
 
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteHouse(
+    public ResponseEntity<?> deleteActivity(
             @RequestHeader("franchiseId") String franchisId,
             @RequestHeader("roleType") String roleType,
             @RequestParam("activityId") int activityId)
