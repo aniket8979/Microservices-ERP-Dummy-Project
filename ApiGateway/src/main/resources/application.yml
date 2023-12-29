@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+
+spring:
+  application:
+    name: api-gateway
+
+
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+
+      routes:
+        - id: staff-service
+          uri: lb://staff-service
+          predicates:
+            - Path=/teacher/**, /role/**
+          filters:
+            - AuthenticationFilter
+
+        - id: student-service
+          uri: lb://student-service
+          predicates:
+            - Path=/student/**, /category/**, /activity/**, /class/**, /club/**, /house/**
+          filters:
+            - AuthenticationFilter
+
+        - id: login-service
+          uri: lb://login-service
+          predicates:
+            - Path=/login/**, /admin/**
+          filters:
+            - AuthenticationFilter
+
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultzone: http://localhost:8761/eureka
+
+
+logging:
+  level:
+    io.netty: DEBUG
+
