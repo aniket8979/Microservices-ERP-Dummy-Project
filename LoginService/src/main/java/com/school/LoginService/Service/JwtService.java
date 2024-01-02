@@ -1,11 +1,14 @@
 package com.school.LoginService.Service;
 
 
+import com.school.LoginService.Model.SuperAdminModel;
+import com.school.LoginService.Repo.SuperAdminRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -18,6 +21,10 @@ import java.util.Map;
 public class JwtService {
 
 
+    @Autowired
+    private SuperAdminRepo superAdminRepo;
+
+
     private static final String secret = "0ru239ry28fh2bf82f382382098302jf9nc20290fueoijvoe409nw439h384gun39ng398h39jg394j3mc3j9fj3";
 
 
@@ -28,8 +35,9 @@ public class JwtService {
 
 
 
-    public String generateToken(String franchiseId, String emailId, String roleType){
+    public String generateToken(String franchiseId, String emailId, String roleType, String uniqueId){
         Claims claims = Jwts.claims().setSubject(franchiseId);
+        claims.put("uniqueId", uniqueId);
         claims.put("email",emailId);
         claims.put("roleType",roleType);
         return createToken(claims);

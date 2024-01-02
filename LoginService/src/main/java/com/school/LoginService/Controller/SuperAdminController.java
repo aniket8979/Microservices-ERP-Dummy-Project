@@ -24,14 +24,19 @@ public class SuperAdminController {
 
     @PostMapping("/superadmin/register")
     public ResponseEntity<String> registerSuperAdmin(@RequestHeader("SECRET")String secret, @RequestBody SuperAdminModel superAdminInfo){
-        String secretKey = "scriza987654321987654321";
-        if (secretKey.equals(secret)){
-            System.out.println(superAdminInfo.getAdminName());
-            superAdminService.superAdminRepo.save(superAdminInfo);
-            return ResponseEntity.ok("Admin Profile Created");
+        Object admin = superAdminService.createAdmin(secret, superAdminInfo);
+        if(admin != null){
+            if(admin.equals(false)){
+                return ResponseEntity.ok("UniqueId Already Exists");
+            }
+            return ResponseEntity.ok(admin.toString());
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid SecretKey");
-
     }
+
+//    @PostMapping(value = "/record-status/{recordId}")
+//    public ResponseEntity<Object> recordIdStatus(@PathVariable("recordId") String recordId){
+//        boolean isExist =
+//    }
 
 }

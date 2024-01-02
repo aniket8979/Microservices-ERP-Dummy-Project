@@ -107,7 +107,7 @@ public class StudentModel {
     @Column(name = "dpPath")
     private String dpPath;
 
-    @Transient
-    private ClassGrade classGrade;
+    @ManyToOne
+    private ClassSection classSection;
 
 }

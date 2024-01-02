@@ -22,11 +22,12 @@ public class StudentController {
     public ResponseEntity<?> RegisterStudent(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody StudentDTO studentDTO)
     {
         if(roleType.equals("ADMIN")){
             System.out.println("Some error occurred");
-            StudentDTO savedStudent = studentService.SaveStudent(studentDTO, franchiseId);
+            StudentDTO savedStudent = studentService.SaveStudent(studentDTO, franchiseId, uniqueId);
             return ResponseClass.responseSuccess("new student added", "studentForm", studentDTO);
         }
         return ResponseClass.responseFailure("access denied");

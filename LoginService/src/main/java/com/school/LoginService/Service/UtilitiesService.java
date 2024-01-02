@@ -88,9 +88,9 @@ public class UtilitiesService {
                 newuser.setRole(roleType);
                 newuser.setEmail(email);
                 loginRepo.save(newuser);
-                return jwtService.generateToken(email, "random String", roleType);
+                return jwtService.generateToken(email, "random String", roleType, "None" );
             }
-            return jwtService.generateToken(email, "random String", roleType);
+            return jwtService.generateToken(email, "random String", roleType, "None");
         }
 
         return "notSent";

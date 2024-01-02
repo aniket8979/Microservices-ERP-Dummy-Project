@@ -2,7 +2,6 @@ package com.school.ApiGateway.Filter;
 
 
 import com.google.common.net.HttpHeaders;
-import com.school.ApiGateway.Exception.GlobalException;
 import com.school.ApiGateway.Utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +89,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         Claims claim = jwtUtil.extractAllClaims(token);
         exchange.getRequest()
                 .mutate()
+                .header("uniqueId", String.valueOf(claim.get("uniqueId")))
                 .header("franchiseId", String.valueOf(claim.getSubject()))
                 .header("email", String.valueOf(claim.get("email")))
                 .header("roleType", String.valueOf(claim.get("roleType")))

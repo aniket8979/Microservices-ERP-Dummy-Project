@@ -1,7 +1,7 @@
 package com.school.StudentService.Transient;
 
 
-import com.school.StudentService.Model.ClassGrade;
+import com.school.StudentService.Model.ClassSection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -81,7 +81,7 @@ public class TeacherModel {
     private String dpPath;
 
     @Transient
-    private ClassGrade classid;
+    private ClassSection classid;
 
     @Transient
     private List<TimeTable> teaTimeTable;

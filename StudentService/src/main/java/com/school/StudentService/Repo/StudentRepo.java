@@ -13,4 +13,6 @@ public interface StudentRepo extends JpaRepository<StudentModel,Integer> {
     List<StudentModel> findAllByfranchiseId(String franchiseId);
 
     StudentModel getReferenceByuserId(String userId);
+
+    boolean existsByuserId(String recordUserId);
 }

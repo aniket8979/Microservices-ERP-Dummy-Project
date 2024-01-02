@@ -2,12 +2,14 @@ package com.school.StudentService.Service;
 
 import com.school.StudentService.DTO.StudentDTO;
 import com.school.StudentService.Model.StudentModel;
-import com.school.StudentService.Repo.ClassGradeRepo;
+import com.school.StudentService.Repo.ClassSectionRepo;
 import com.school.StudentService.Repo.StudentRepo;
-import com.school.StudentService.Model.ClassGrade;
+import com.school.StudentService.Model.ClassSection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -18,22 +20,28 @@ public class StudentService {
     public StudentRepo studentRepo;
 
     @Autowired
-    public ClassGradeRepo classGradeRepo;
+    public ClassSectionRepo classSectionRepo;
 
-    public StudentDTO SaveStudent(StudentDTO student, String franchiseId){
+    public StudentDTO SaveStudent(StudentDTO student, String franchiseId, String uniqueId){
         StudentModel studentData = student.getStudentData();
-        studentData.setFranchiseId(franchiseId);
-//        System.out.println(studentData.getName());
 
-//        student.setClassData(student.getClassData().getId());
+        String userId;
+        while(true){
+            userId = UtilitiesServices.generateRecordId(uniqueId, "st");
+            boolean found = studentRepo.existsByuserId(userId);
+            if(!found){
+                studentData.setFranchiseId(franchiseId);
+                break;
+            }
+        }
 
-        ClassGrade classGradeData = student.getClassData();
-//        System.out.println(classGradeData.getClassName());
+        studentData.setUserId(userId);
 
+        String section = student.getClassData().getSectionId();
+        ClassSection classGradeData = classSectionRepo.findBysectionId(section);
+
+        studentData.setClassSection(classGradeData);
         studentRepo.save(studentData);
-//        System.out.println(studentData.getId());
-        classGradeRepo.save(classGradeData);
-//        System.out.println(classGradeData.getId());
         return student;
     }
 
@@ -42,11 +50,6 @@ public class StudentService {
         allStudents = studentRepo.findAllByfranchiseId(franchiseId);
         return allStudents;
     }
-
-
-
-
-
 
 
 

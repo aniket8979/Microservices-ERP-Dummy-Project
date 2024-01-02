@@ -16,7 +16,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "activity")
-public class ActivityModel {
+public class
+
+ActivityModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

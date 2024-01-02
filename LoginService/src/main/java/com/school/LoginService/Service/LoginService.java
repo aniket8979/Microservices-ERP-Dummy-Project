@@ -56,8 +56,8 @@ public class LoginService {
     }
 
 
-    public String generateToken(String franchiseId, String emailId, String roleType) {
-        return jwtService.generateToken(franchiseId, emailId, roleType);
+    public String generateToken(String franchiseId, String emailId, String roleType, String uniqueId) {
+        return jwtService.generateToken(franchiseId, emailId, roleType, uniqueId);
     }
 
 
@@ -72,12 +72,14 @@ public class LoginService {
         if (loginInfo != null) {
             String userPassword = loginInfo.getPassword();
             if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
-                String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole());
+                SuperAdminModel franchiseAdmin = superAdminRepo.findByfranchiseId(loginDetails.getFranchiseId());
+                String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole(), franchiseAdmin.getUniqueId());
                 response.put("token", token);
                 response.put("status","success");
                 response.put("msg", "user logged in");
                 return response;
             }
+
             response.put("status","failed");
             response.put("msg", "Invalid Password");
             return response;

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "class_section")
-public class ClassGrade {
+public class ClassSection {
 
 
     @Id
@@ -23,12 +23,15 @@ public class ClassGrade {
 
     private String franchiseId;
 
-    private String recordId;
+    private String sectionId;
 
+    private String sectionName;
 
-//    private String roomNo;
+    @ManyToOne
+    private ClassGrade classGrade;
 
     @Transient
+    @OneToOne
     private TeacherModel classTeacher;
 
     @OneToMany(fetch = FetchType.EAGER)

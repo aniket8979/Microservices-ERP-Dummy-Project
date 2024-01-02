@@ -48,8 +48,8 @@ public class LoginController {
             @RequestBody SetPasswordDTO passdata)
     {
         HashMap<String, String> resp = new HashMap<>();
-        System.out.println(STR."Request Received:\{email} ");
-        System.out.println(STR."password is not received\{passdata.getPassword()} ");
+        System.out.println("Request Received: " +email);
+        System.out.println("password is not received: " + passdata.getPassword());
         String verified = (String) loginService.updatePassword(email, passdata.getPassword(), passdata.getOtp());
 
         if(verified.equals("password updated")){

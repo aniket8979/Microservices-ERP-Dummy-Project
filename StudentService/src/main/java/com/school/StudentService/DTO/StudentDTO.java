@@ -1,7 +1,7 @@
 package com.school.StudentService.DTO;
 
 import com.school.StudentService.Model.StudentModel;
-import com.school.StudentService.Model.ClassGrade;
+import com.school.StudentService.Model.ClassSection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ public class StudentDTO {
 
     private StudentModel studentData;
 
-    private ClassGrade classData;
+    private ClassSection classData;
 
 }
