@@ -8,4 +8,7 @@ public interface OtpRepo extends JpaRepository<Otp, Integer> {
     Otp getReferenceByemail(String email);
 
     void deleteByemail(String email);
+
+    void deleteAllByemail(String email);
+
 }

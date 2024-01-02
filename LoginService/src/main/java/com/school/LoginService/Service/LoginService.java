@@ -11,14 +11,12 @@ import com.school.LoginService.Repo.SuperAdminRepo;
 import com.school.LoginService.Transient.StudentModel;
 import com.school.LoginService.Transient.TeacherModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.lang.StringTemplate.STR;
 
 
 @Service
@@ -72,7 +70,15 @@ public class LoginService {
         if (loginInfo != null) {
             String userPassword = loginInfo.getPassword();
             if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
-                SuperAdminModel franchiseAdmin = superAdminRepo.findByfranchiseId(loginDetails.getFranchiseId());
+                System.out.println(loginInfo.getFranchiseId()+" this is franhciseId of user");
+                System.out.println(loginInfo.getRole()+" this is role of user");
+                SuperAdminModel franchiseAdmin = superAdminRepo.findByfranchiseId(loginInfo.getFranchiseId());
+                if(franchiseAdmin == null){
+                    System.out.println("franchise admin not found");
+                    response.put("status", "failed");
+                    response.put("msg", "user not found");
+                    return response;
+                }
                 String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole(), franchiseAdmin.getUniqueId());
                 response.put("token", token);
                 response.put("status","success");
@@ -99,6 +105,7 @@ public class LoginService {
 
         if(verify != null){
             if(verify.getOtp() == otp){
+
                 if(verify.getExpires().isBefore(now)){
                     return "otp expired";
                 }else{
@@ -134,7 +141,7 @@ public class LoginService {
         // Retreiving If User Information Exists
 
         try{
-            otpRepo.deleteByemail(email);
+            otpRepo.deleteAllByemail(email);
             System.out.println("old OTP deleted");
         }catch (Exception e){
             System.out.println("not found in OTP Table");

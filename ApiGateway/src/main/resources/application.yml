@@ -29,7 +29,7 @@ spring:
         - id: student-service
           uri: lb://student-service
           predicates:
-            - Path=/student/**, /category/**, /activity/**, /class/**, /club/**, /house/**
+            - Path=/student/**, /category/**, /activity/**, /class/**, /club/**, /house/**, /section/**
           filters:
             - AuthenticationFilter
 

@@ -180,6 +180,16 @@ public class TeacherController {
         return null;
     }
 
+    @GetMapping("/staff-by-userid")
+    public ResponseEntity<?> staffByFound (@RequestParam("userId") String userId){
+        TeacherModel staff = teacherRepo.getReferenceByuserId(userId);
+        if(staff != null){
+            System.out.println("from staff-service, teache Controller:"+staff.getEmail());
+            return ResponseEntity.ok(staff);
+        }
+        return null;
+    }
+
 
 
 

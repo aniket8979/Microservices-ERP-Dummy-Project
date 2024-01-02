@@ -9,8 +9,7 @@ public class UtilitiesServices {
         final String ALPHA_NUMERIC = "abcdefghijkmnoprstuv0123456789";
 
         int time = LocalDate.now().getYear() - 2000;
-        String year = String.valueOf(time-2000);
-        String recordUser = uniqueId+type+year;
+        String recordUser = uniqueId+type+time;
 
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
@@ -23,6 +22,7 @@ public class UtilitiesServices {
         }
         String randomAlphaNumeric = sb.toString();
         recordUserId = recordUser+randomAlphaNumeric;
+        System.out.println("this is recordId new "+recordUserId);
 
         return recordUserId;
     }

@@ -1,10 +1,10 @@
 package com.school.StudentService.Service;
 
-import com.school.StudentService.DTO.ClassDTO;
 import com.school.StudentService.DTO.ClassSectionDTO;
-import com.school.StudentService.Model.ClassGrade;
+import com.school.StudentService.FeignService.StaffServiceFeign;
 import com.school.StudentService.Model.ClassSection;
 import com.school.StudentService.Repo.ClassSectionRepo;
+import com.school.StudentService.Transient.TeacherModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,9 @@ public class ClassSectionService {
 
     @Autowired
     public ClassSectionRepo classSectionRepo;
+
+    @Autowired
+    public StaffServiceFeign staffServiceFeign;
 
 
     public Object addNewSection(ClassSection classSection, String franchiseId, String uniqueId) {
@@ -49,6 +52,15 @@ public class ClassSectionService {
 
         if(franchiseId.equals(thisSection.getFranchiseId())) {
 
+            if(editSection.getClassTeacher().getUserId() != null && !(editSection.getClassTeacher().getUserId().equals(thisSection.getClassTeacher().getUserId()))){
+                // Calling feign service for data of new teacher
+                TeacherModel updateTeacher = staffServiceFeign.staffByUserId(thisSection.getClassTeacher().getUserId());
+                if(updateTeacher != null){
+                    thisSection.setClassTeacher(updateTeacher);
+                }
+                return "nullTeacher";
+            }
+
             if((editSection.getSectionName() != null) && !(thisSection.getSectionName().equals(editSection.getSectionName()))) {
 
                 boolean found = doesThisExist(franchiseId, editSection.getSectionName());
@@ -72,6 +84,7 @@ public class ClassSectionService {
 
 
 
+
     public List<ClassSectionDTO> getAllClasses(String franchiseId) {
         List<ClassSection> allSection = classSectionRepo.findAllByfranchiseId(franchiseId);
         List<ClassSectionDTO> allSectionDto = new ArrayList<>();
@@ -79,8 +92,8 @@ public class ClassSectionService {
             ClassSectionDTO dto = new ClassSectionDTO();
             dto.setSectionId(c.getSectionId());
             dto.setSectionName(c.getSectionName());
-            dto.setTeacherName(c.getClassTeacher().getName());
-            dto.setTotalStudent(c.getClassStudents().size());
+//            dto.setTeacherName(c.getClassTeacher().getName());
+//            dto.setTotalStudent(c.getClassStudents().size());
             allSectionDto.add(dto);
         }
         return allSectionDto;

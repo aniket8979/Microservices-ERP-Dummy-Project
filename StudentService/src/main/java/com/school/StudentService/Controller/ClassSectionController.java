@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/section")
+@RequestMapping(path = "/section")
 public class ClassSectionController {
 
     @Autowired
@@ -61,10 +61,11 @@ public class ClassSectionController {
             return ResponseClass.responseFailure("class does not exist");
         } else if(edit.equals(false)) {
             return ResponseClass.responseFailure("class already exists");
+        } else if(edit.equals("nullTeacher")) {
+            return ResponseClass.responseFailure("teacher not found");
         } else {
             return ResponseClass.responseSuccess("section updated", "section", edit);
         }
-
     }
 
 
@@ -72,16 +73,16 @@ public class ClassSectionController {
     public ResponseEntity<?> deleteSection(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @PathVariable("classId") String classId)
+            @PathVariable("sectionId") String sectionId)
     {
         if(!roleType.equals("ADMIN")){
             return ResponseClass.responseFailure("access denied");
         }
-        ClassSection thisSection = classSectionService.classSectionRepo.findBysectionId(classId);
+        ClassSection thisSection = classSectionService.classSectionRepo.findBysectionId(sectionId);
         if(thisSection==null){
             return ResponseClass.responseFailure("section not found");
         }
-        if(thisSection.getFranchiseId().equals(franchiseId)){
+        if(!thisSection.getFranchiseId().equals(franchiseId)){
             return ResponseClass.responseFailure("section not found");
         }
         classSectionService.classSectionRepo.delete(thisSection);

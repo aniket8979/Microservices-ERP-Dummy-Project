@@ -13,4 +13,6 @@ public interface ClassSectionRepo extends JpaRepository<ClassSection, Integer> {
     List<ClassSection> findAllByfranchiseId(String franchiseId);
 
     boolean existsBysectionId(String sectionId);
+
+    ClassSection getReferenceBysectionId(String sectionId);
 }

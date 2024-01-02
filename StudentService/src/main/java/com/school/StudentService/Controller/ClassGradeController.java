@@ -3,8 +3,6 @@ package com.school.StudentService.Controller;
 import com.school.StudentService.DTO.ClassDTO;
 import com.school.StudentService.Exception.ResponseClass;
 import com.school.StudentService.Model.ClassGrade;
-import com.school.StudentService.Model.ClassSection;
-import com.school.StudentService.Repo.ClassSectionRepo;
 import com.school.StudentService.Service.ClassGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +46,10 @@ public class ClassGradeController {
         return ResponseClass.responseSuccess("new class added","class",saved);
     }
 
+
+
+
+
     @PostMapping("/edit")
     public ResponseEntity<?> editClassGrade(
             @RequestHeader("franchiseId") String franchiseId,
@@ -58,11 +60,13 @@ public class ClassGradeController {
         if(!roleType.equals("ADMIN")){
             return ResponseClass.responseFailure("access denied");
         }
-        Object edit = classGradeService.editClassGrade(editClass, franchiseId, uniqueId);
+        Object edit = classGradeService.editClassGrade(editClass, franchiseId);
         if(edit == null){
             return ResponseClass.responseFailure("class does not exist");
         } else if(edit.equals(false)) {
             return ResponseClass.responseFailure("class already exists");
+        } else if(edit.equals("nullClass")) {
+            return ResponseClass.responseFailure("section not found");
         } else {
             return ResponseClass.responseSuccess("class updated", "class", edit);
         }
@@ -83,14 +87,13 @@ public class ClassGradeController {
         if(thisClass==null){
             return ResponseClass.responseFailure("class not found");
         }
-        if(thisClass.getFranchiseId().equals(franchiseId)){
+        if(!thisClass.getFranchiseId().equals(franchiseId)){
             return ResponseClass.responseFailure("class not found");
         }
+
         classGradeService.classGradeRepo.delete(thisClass);
         return ResponseClass.responseSuccess("class successfully deleted");
     }
-
-
 
 
 

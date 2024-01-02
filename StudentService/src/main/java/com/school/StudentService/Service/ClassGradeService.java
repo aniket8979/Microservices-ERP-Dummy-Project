@@ -1,10 +1,10 @@
 package com.school.StudentService.Service;
 
 import com.school.StudentService.DTO.ClassDTO;
-import com.school.StudentService.Model.CategoryModel;
 import com.school.StudentService.Model.ClassGrade;
 import com.school.StudentService.Model.ClassSection;
 import com.school.StudentService.Repo.ClassGradeRepo;
+import com.school.StudentService.Repo.ClassSectionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,9 @@ public class ClassGradeService {
 
     @Autowired
     public ClassGradeRepo classGradeRepo;
+
+    @Autowired
+    public ClassSectionRepo classSectionRepo;
 
 
     public Object addNewClass(ClassGrade classGrade, String franchiseId, String uniqueId) {
@@ -41,13 +44,24 @@ public class ClassGradeService {
         return null;
     }
 
-    public Object editClassGrade(ClassGrade editClass, String franchiseId, String uniqueId) {
+    public Object editClassGrade(ClassGrade editClass, String franchiseId) {
         ClassGrade thisClass = classGradeRepo.findByclsRecordId(editClass.getClsRecordId());
         if(thisClass==null){
             return null;
         }
 
         if(franchiseId.equals(thisClass.getFranchiseId())) {
+
+            if(editClass.getSection().getFirst() == null && !hasSection(thisClass, editClass.getSection().getFirst().getSectionId())){
+
+                ClassSection newSection = classSectionRepo.findBysectionId(editClass.getSection().getFirst().getSectionId());
+                if(newSection != null){
+                    List<ClassSection> addingSection = new ArrayList<>();
+                    addingSection.add(newSection);
+                    thisClass.setSection(addingSection);
+                }
+                return "nullClass";
+            }
 
             if((editClass.getClassName() != null) && !(thisClass.getClassName().equals(editClass.getClassName()))) {
 
@@ -81,6 +95,11 @@ public class ClassGradeService {
         }
         return allClassDto;
     }
+
+    public boolean hasSection(ClassGrade thisClass, String editSectionId){
+        return thisClass.getSection().stream().anyMatch(c -> c.getSectionId().equals(editSectionId));
+    }
+
 
     public boolean doesThisExist(String franchiseId, String className){
         List<ClassGrade> allClasses = classGradeRepo.findAllByfranchiseId(franchiseId);
