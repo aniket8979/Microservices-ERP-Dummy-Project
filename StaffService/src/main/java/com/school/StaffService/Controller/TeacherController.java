@@ -142,7 +142,7 @@ public class TeacherController {
     {
         if(roleType.equals("ADMIN")){
             List<TeacherModel> allStaff = teacherRepo.findAllByfranchiseId(franchiseid);
-            return ResponseEntity.ok(allStaff);
+            return ResponseClass.responseSuccess("all staff data", "allStaff", allStaff);
         }
         return ResponseClass.responseFailure("access denied");
     }

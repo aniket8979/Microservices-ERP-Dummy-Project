@@ -45,8 +45,8 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/get")
-    public ResponseEntity<List<?>> getAllCategories(
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllCategories(
             @RequestHeader("franchiseId") String franchiseId)
     {
         List<CategoryModel> categories = categoryService.categoryRepo.findAllByfranchiseId(franchiseId);
@@ -59,7 +59,7 @@ public class CategoryController {
             thisCategory.setCategoryDescription(category.getCategoryDescription());
             allCategories.add(thisCategory);
         }
-        return ResponseEntity.ok(allCategories);
+        return ResponseClass.responseSuccess("all categories daata", "allCategories", allCategories);
     }
 
 

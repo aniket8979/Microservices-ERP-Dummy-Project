@@ -70,13 +70,13 @@ public class ActivityContoller {
     }
 
 
-    @GetMapping("/get")
-    public ResponseEntity<List<?>> getAllActivity(
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllActivity(
             @RequestHeader("franchiseId") String franchiseId
     )
     {
         List<ActivityModel> allActivities = activityService.activityRepo.findAllByfranchiseId(franchiseId);
-        return ResponseEntity.ok(allActivities);
+        return ResponseClass.responseSuccess("all activities data", "allActivities", allActivities);
     }
 
 

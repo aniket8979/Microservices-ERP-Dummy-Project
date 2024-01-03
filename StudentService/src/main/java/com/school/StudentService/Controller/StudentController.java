@@ -49,6 +49,11 @@ public class StudentController {
         return testing;
     }
 
+
+
+
+    ////////////////////////////////////////////////////////////////
+    /* These are Feign controllers. All Internal scope controllers will be created under here. */
     @PostMapping("/studentfound")
     public ResponseEntity<?> StudentFound(
             @RequestParam("email") String email)
@@ -61,6 +66,26 @@ public class StudentController {
         return null;
     }
 
+
+    @GetMapping("/getStudentId/{studentId}")
+    public ResponseEntity<?> getStudentId(@PathVariable  String studentId)
+    {
+        StudentModel obj = studentService.studentRepo.findByuserId(studentId);
+        if (obj != null){
+            return  ResponseEntity.ok(obj);
+        }
+        return null;
+    }
+
+    @GetMapping("/getAllStudent/{franchiseId}")
+    public ResponseEntity<?> getAllStudent(@PathVariable("franchiseId") String franchiseId)
+    {
+        List<StudentModel> obj = studentService.studentRepo.findAllByfranchiseId(franchiseId);
+        if(obj != null){
+            return  ResponseEntity.ok(obj);
+        }
+        return null;
+    }
 
 
 

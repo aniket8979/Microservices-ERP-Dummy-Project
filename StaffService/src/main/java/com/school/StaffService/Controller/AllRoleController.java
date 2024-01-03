@@ -36,7 +36,7 @@ public class AllRoleController {
         if(roleType.equals("ADMIN")){
             List<AllRole> allRoles = allRoleRepo.findAllByfranchiseId(franchiseId);
             if(!allRoles.isEmpty()){
-                return ResponseEntity.ok(allRoles);
+                return ResponseClass.responseSuccess("All roles & permissions", "allRoles", allRoles);
             }
             return ResponseClass.responseFailure("Roles & Permission not found");
         }

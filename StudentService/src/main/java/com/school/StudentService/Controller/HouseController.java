@@ -67,13 +67,13 @@ public class HouseController {
     }
 
 
-    @GetMapping("/get")
-    public ResponseEntity<List<HouseModel>> getAllHouse(
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllHouse(
             @RequestHeader("franchiseId") String franchiseId
     )
     {
         List<HouseModel> allHouses = houseService.houseRepo.findAllByfranchiseId(franchiseId);
-        return ResponseEntity.ok(allHouses);
+        return ResponseClass.responseSuccess("all houses data", "allHouses", allHouses);
     }
 
 

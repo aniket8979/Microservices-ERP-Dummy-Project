@@ -2,6 +2,7 @@ package com.school.StudentService.Service;
 
 import com.school.StudentService.DTO.ClassSectionDTO;
 import com.school.StudentService.FeignService.StaffServiceFeign;
+import com.school.StudentService.Model.ClassGrade;
 import com.school.StudentService.Model.ClassSection;
 import com.school.StudentService.Repo.ClassSectionRepo;
 import com.school.StudentService.Transient.TeacherModel;

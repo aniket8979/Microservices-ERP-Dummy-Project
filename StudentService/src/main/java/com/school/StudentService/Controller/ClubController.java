@@ -52,8 +52,8 @@ public class ClubController {
     }
 
 
-    @GetMapping("/get")
-    public ResponseEntity<List<?>> getAllClubs(
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllClubs(
             @RequestHeader("franchiseId") String franchiseId)
     {
         List<ClubModel> clubs = clubRepo.findAllByfranchiseId(franchiseId);
@@ -68,7 +68,7 @@ public class ClubController {
             thisClub.setClubIcon(club.getClubIcon());
             allClubs.add(thisClub);
         }
-        return ResponseEntity.ok(allClubs);
+        return ResponseClass.responseSuccess("all clubs data", "allClubs", allClubs);
     }
 
 
