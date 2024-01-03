@@ -7,6 +7,7 @@ import com.school.StudentService.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,24 +24,27 @@ public class StudentController {
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
             @RequestHeader("uniqueId") String uniqueId,
-            @RequestBody StudentDTO studentDTO)
+            @RequestParam("profilePic") MultipartFile profilePic,
+            @RequestParam("data") String studentData)
     {
         if(roleType.equals("ADMIN")){
-            System.out.println("Some error occurred");
-            StudentDTO savedStudent = studentService.SaveStudent(studentDTO, franchiseId, uniqueId);
-            return ResponseClass.responseSuccess("new student added", "studentForm", studentDTO);
+
+            StudentModel savedStudent = studentService.SaveStudent(studentData, franchiseId, uniqueId, profilePic);
+            return ResponseClass.responseSuccess("new student added", "studentForm", savedStudent);
         }
         return ResponseClass.responseFailure("access denied");
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<List<StudentModel>> GetStudent(
+
+
+    @GetMapping("/getall")
+    public ResponseEntity<?> GetStudent(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType)
     {
         System.out.println("Get All API");
         List<StudentModel> allStudent = studentService.getAllStudent(franchiseId);
-        return ResponseEntity.ok(allStudent);
+        return ResponseClass.responseSuccess("all students data", "student", allStudent);
     }
 
 
@@ -67,8 +71,8 @@ public class StudentController {
     }
 
 
-    @GetMapping("/getStudentId/{studentId}")
-    public ResponseEntity<?> getStudentId(@PathVariable  String studentId)
+    @GetMapping("/getStudentId")
+    public ResponseEntity<?> getStudentId(@RequestParam("studentId") String studentId)
     {
         StudentModel obj = studentService.studentRepo.findByuserId(studentId);
         if (obj != null){
@@ -77,8 +81,8 @@ public class StudentController {
         return null;
     }
 
-    @GetMapping("/getAllStudent/{franchiseId}")
-    public ResponseEntity<?> getAllStudent(@PathVariable("franchiseId") String franchiseId)
+    @GetMapping("/getAllStudent")
+    public ResponseEntity<?> getAllStudent(@RequestParam("franchiseId") String franchiseId)
     {
         List<StudentModel> obj = studentService.studentRepo.findAllByfranchiseId(franchiseId);
         if(obj != null){

@@ -29,12 +29,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-    public static ResponseEntity<Map<String, Object>>  internalServerError(String message) {
+    public ResponseEntity<Map<String, Object>>  internalServerError(String message) {
         Map<String, Object> successResponse = new HashMap<>();
         successResponse.put("msg", message);
         successResponse.put("status", "failure");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(successResponse);
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleInternalServerException(Exception ex) {

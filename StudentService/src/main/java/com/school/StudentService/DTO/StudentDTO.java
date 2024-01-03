@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StudentDTO {
 
-    private StudentModel studentData;
+    private StudentModel studentInfo;
 
     private ClassSection classData;
 

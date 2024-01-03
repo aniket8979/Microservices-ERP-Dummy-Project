@@ -32,6 +32,7 @@ public class ActivityContoller {
             @RequestHeader("roleType") String roleType,
             @RequestBody ActivityModel activity) {
         Map<String, Object> resp = new HashMap<>();
+
         if(roleType.equals("ADMIN")) {
             Object saved = activityService.addNewActivity(activity, franchiseId);
             if(saved.equals(true)){
