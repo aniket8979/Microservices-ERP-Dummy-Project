@@ -44,6 +44,8 @@ public class ClassGradeService {
         return null;
     }
 
+
+
     public Object editClassGrade(ClassGrade editClass, String franchiseId) {
         ClassGrade thisClass = classGradeRepo.findByclsRecordId(editClass.getClsRecordId());
         if(thisClass==null){
@@ -104,6 +106,14 @@ public class ClassGradeService {
     public boolean doesThisExist(String franchiseId, String className){
         List<ClassGrade> allClasses = classGradeRepo.findAllByfranchiseId(franchiseId);
         return allClasses.stream().anyMatch(c -> c.getClassName().equals(className));
+    }
+
+
+    public ClassDTO setInDTO(ClassGrade thisClass){
+        ClassDTO updatedClass = new ClassDTO();
+        updatedClass.setClassId(thisClass.getClsRecordId());
+        updatedClass.setClassName(thisClass.getClassName());
+        return updatedClass;
     }
 
 

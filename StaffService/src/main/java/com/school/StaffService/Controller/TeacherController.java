@@ -134,6 +134,102 @@ public class TeacherController {
 
 
 
+
+    @PostMapping(path = "/register1")
+    ResponseEntity<?> TeacherRegister(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("email") String email,
+            @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
+
+            @RequestParam Map<String, MultipartFile> fileMap,
+            @RequestParam("profilePic") MultipartFile dp,
+            @RequestBody TeacherDTO teacherRegister)
+    {
+
+        // To only Allow Admin to register another User
+        if(roleType.equals("ADMIN")){
+
+//            System.out.println("jai shree ram");
+//            ObjectMapper jsonobj = new ObjectMapper();
+//
+//            fileMap.remove("profilePic");
+//            TeacherDTO data = null;
+//            try {
+//                data = jsonobj.readValue(jsondata, TeacherDTO.class);
+//            } catch (JsonProcessingException e) {
+//                System.out.println("Another Exception" + e);
+//                throw new RuntimeException(e);
+//            }
+
+            TeacherModel userdata = teacherRegister.getUserReq() ;
+            String userrole = teacherRegister.getRoleReq();
+            List<Document> userdoc = teacherRegister.getDocReq();
+
+
+
+            String dppath = utilities.profilePicPath;
+            MultipartFile userdp = dp;
+            String dpname = userdata.getUsername();
+
+            utilities.fileSave(dp, dppath, dpname);
+
+            userdata.setDpPath(dppath + "/" + dpname);
+
+            String userId;
+            while(true){
+                userId = utilities.generateRecordId(uniqueId, "tch");
+                boolean found = teacherRepo.existsByuserId(userId);
+                if(!found){
+                    userdata.setUserId(userId);
+                    break;
+                }
+            }
+
+            boolean found = teacherRepo.existsByemail(userdata.getEmail());
+            if(found){
+                throw new BadRequestException("Staff with this Email Already Exist");
+            }else {
+                userdata.setFranchiseId(franchiseId);
+            }
+
+
+            if(userrole == null) {
+                userrole = "USER";
+            }
+            boolean roleSaved = roleService.saveRoleForUser(userrole, userId, userdata.getEmail(), franchiseId);
+
+
+            int itr = 0;
+            Map<String, MultipartFile> files;
+            files = fileMap;
+            boolean documentSaved = teacherService.saveDocRegister(userdoc, files, userdata.getUserId(), franchiseId);
+
+            if(documentSaved){
+
+                teacherRepo.save(userdata);
+
+                return ResponseClass.responseSuccess("staff added successfully", "staffData", teacherRegister);
+            }
+            return ResponseClass.responseSuccess("document not saved properly", "staffData", teacherRegister);
+        }
+        return ResponseClass.responseFailure("access denied");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @GetMapping("/allstaff")
     public ResponseEntity<?> getAll(
             @RequestHeader("franchiseId") String franchiseid,

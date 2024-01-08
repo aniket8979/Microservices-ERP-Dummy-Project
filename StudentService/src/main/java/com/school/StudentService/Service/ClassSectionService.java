@@ -121,5 +121,27 @@ public class ClassSectionService {
         thisSection.setClassTeacher(null);
         classSectionRepo.delete(thisSection);
     }
+
+
+
+    public ClassSectionDTO setInDTO(ClassSection thisSection){
+        ClassSectionDTO updatedSection = new ClassSectionDTO();
+        updatedSection.setSectionId(thisSection.getSectionId());
+        updatedSection.setSectionName(thisSection.getSectionName());
+        if(thisSection.getClassTeacher() != null){
+            updatedSection.setTeacherName(thisSection.getClassTeacher().getName());
+        }
+        if(!thisSection.getClassStudents().isEmpty()){
+            updatedSection.setTotalStudent(thisSection.getClassStudents().size());
+        }
+        return updatedSection;
+    }
+
+
+
+
+
+
+
 }
 

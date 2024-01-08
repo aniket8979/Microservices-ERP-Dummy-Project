@@ -27,6 +27,33 @@ public class ClassSectionController {
 
 
 
+    @PostMapping("/get")
+    public ResponseEntity<?> getSectionById(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType,
+            @RequestParam("sectionId") String sectionId)
+    {
+        ClassSection thisSection = classSectionService.classSectionRepo.findBysectionId(sectionId);
+        if(thisSection==null){
+            return ResponseClass.responseFailure("section not found");
+        }
+        if(!thisSection.getFranchiseId().equals(franchiseId)){
+            return ResponseClass.responseFailure("section not found");
+        }
+        ClassSectionDTO section = classSectionService.setInDTO(thisSection);
+        return ResponseClass.responseSuccess("section info", "section", section);
+    }
+
+
+
+
+
+
+
+
+
+
+
     @PostMapping("/add")
     public ResponseEntity<?> addClassSection(
             @RequestHeader("franchiseId") String franchiseId,
@@ -69,11 +96,11 @@ public class ClassSectionController {
     }
 
 
-    @PostMapping("/delete/{sectionId}")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteSection(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @PathVariable("sectionId") String sectionId)
+            @RequestParam("sectionId") String sectionId)
     {
         if(!roleType.equals("ADMIN")){
             return ResponseClass.responseFailure("access denied");

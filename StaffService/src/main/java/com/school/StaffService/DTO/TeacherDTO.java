@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TeacherDTO {
+
     private TeacherModel userReq;
     private String roleReq;
     private List<Document> docReq;

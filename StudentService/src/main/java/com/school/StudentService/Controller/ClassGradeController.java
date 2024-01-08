@@ -74,12 +74,43 @@ public class ClassGradeController {
 
     }
 
+    @PostMapping("/get")
+    public ResponseEntity<?> getClassById(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType,
+            @RequestParam("classId") String classId)
+    {
+        ClassGrade thisClass = classGradeService.classGradeRepo.findByclsRecordId(classId);
+        if(thisClass==null){
+            return ResponseClass.responseFailure("class not found");
+        }
+        if(!thisClass.getFranchiseId().equals(franchiseId)){
+            return ResponseClass.responseFailure("class not found");
+        }
 
-    @PostMapping("/delete/{classId}")
+        ClassDTO classGrade = classGradeService.setInDTO(thisClass);
+        return ResponseClass.responseSuccess("class info", "classGrade", classGrade);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteClass(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @PathVariable("classId") String classId)
+            @RequestParam("classId") String classId)
     {
         if(!roleType.equals("ADMIN")){
             return ResponseClass.responseFailure("access denied");
