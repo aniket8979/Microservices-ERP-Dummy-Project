@@ -31,4 +31,6 @@ public class LoginModel {
     @Column(name = "franchiseId",nullable = false)
     private String franchiseId;
 
+    private String uniqueId;
+
 }

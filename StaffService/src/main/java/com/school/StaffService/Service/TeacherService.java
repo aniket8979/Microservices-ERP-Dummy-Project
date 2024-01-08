@@ -42,8 +42,7 @@ public class TeacherService {
 
 
     public TeacherModel findOneByUserId(String userid){
-        List<TeacherModel> t = teacherRepo.findByuserId(userid);
-        return t.get(0);
+        return teacherRepo.findByuserId(userid);
     }
 
 
@@ -74,13 +73,14 @@ public class TeacherService {
                          Files.write(path, bytes);
                          itr = itr + 1;
                      } catch (IOException e) {
-                         throw new RuntimeException(e);
+                         throw new RuntimeException("unable to save files");
                      }
                      try {
                          doc.setDocPath(fpath);
                          doc.setDocUserId(userId);
                          doc.setFranchiseId(franchiseId);
                          docRepo.save(doc);
+                         return true;
 
                      } catch (Exception e) {
                          System.out.println("Some Error With DocUser: " + e);

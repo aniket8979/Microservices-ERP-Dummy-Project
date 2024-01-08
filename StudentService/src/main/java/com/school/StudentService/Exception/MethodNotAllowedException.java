@@ -1,2 +1,12 @@
-package com.school.StudentService.Exception;public class MethodNotAllowedException {
+package com.school.StudentService.Exception;
+
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+
+public class MethodNotAllowedException extends HttpRequestMethodNotSupportedException {
+
+    public MethodNotAllowedException(String msg){
+        super(msg);
+    }
+
+
 }

@@ -43,23 +43,29 @@ public class ActivityService {
                 }
             }
             activityRepo.save(thisActivity);
-            ActivityDTO activityDTO = new ActivityDTO();
-            activityDTO.setActivityName(thisActivity.getActivityName());
-            activityDTO.setActivityColour(thisActivity.getActivityColour());
-            activityDTO.setActivityDate(thisActivity.getActivityDate());
-            activityDTO.setDescription(thisActivity.getDescription());
-            activityDTO.setActivityIcon(thisActivity.getActivityIcon());
-            return activityDTO;
+
+            return setActivityInDTO(thisActivity);
         }
         return "notFound";
     }
 
 
 
-    public Object addNewActivity(ActivityModel activity, String franchiseId)
+    public Object addNewActivity(ActivityModel activity, String franchiseId, String uniqueId)
     {
-        boolean found = doesItExist(franchiseId, activity.getActivityName());
-        if(!found){
+        boolean exist = doesItExist(franchiseId, activity.getActivityName());
+        String activityId;
+        if(!exist){
+            while(true)
+            {
+                activityId = UtilitiesServices.generateRecordId(uniqueId, "act");
+                boolean found = activityRepo.existsByactivityId(activityId);
+                if(!found){
+                    activity.setActivityId(activityId);
+                    break;
+                }
+            }
+
             activity.setFranchiseId(franchiseId);
             activityRepo.save(activity);
             return true;
@@ -67,6 +73,18 @@ public class ActivityService {
         return "Activity with this name already exists";
     }
 
+
+
+    public ActivityDTO setActivityInDTO(ActivityModel activity){
+        ActivityDTO thisActivityDTO = new ActivityDTO();
+        thisActivityDTO.setActivityId(activity.getActivityId());
+        thisActivityDTO.setActivityName(activity.getActivityName());
+        thisActivityDTO.setActivityIcon(activity.getActivityIcon());
+        thisActivityDTO.setActivityColour(activity.getActivityColour());
+        thisActivityDTO.setDescription(activity.getDescription());
+        thisActivityDTO.setActivityDate(activity.getActivityDate());
+        return thisActivityDTO;
+    }
 
 
 

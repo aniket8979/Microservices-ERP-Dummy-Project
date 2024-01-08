@@ -4,6 +4,8 @@ import com.school.StudentService.DTO.ClassSectionDTO;
 import com.school.StudentService.FeignService.StaffServiceFeign;
 import com.school.StudentService.Model.ClassGrade;
 import com.school.StudentService.Model.ClassSection;
+import com.school.StudentService.Model.StudentModel;
+import com.school.StudentService.Repo.ClassGradeRepo;
 import com.school.StudentService.Repo.ClassSectionRepo;
 import com.school.StudentService.Transient.TeacherModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class ClassSectionService {
     @Autowired
     public StaffServiceFeign staffServiceFeign;
 
+    @Autowired
+    public ClassGradeRepo classGradeRepo;
+
 
     public Object addNewSection(ClassSection classSection, String franchiseId, String uniqueId) {
         classSection.setFranchiseId(franchiseId);
@@ -37,6 +42,8 @@ public class ClassSectionService {
                         break;
                     }
                 }
+                ClassGrade grade = classGradeRepo.findByclsRecordId(classSection.getClassGrade().getClsRecordId());
+                classSection.setClassGrade(grade);
                 classSectionRepo.save(classSection);
                 return classSection;
             }
@@ -106,5 +113,13 @@ public class ClassSectionService {
         return allSection.stream().anyMatch(s -> s.getSectionName().equals(sectionName));
     }
 
+    public void deleteSection(ClassSection thisSection) {
+        List<StudentModel> allStudents = thisSection.getClassStudents();
+        for (StudentModel student : allStudents) {
+            student.setClassSection(null);
+        }
+        thisSection.setClassTeacher(null);
+        classSectionRepo.delete(thisSection);
+    }
 }
 

@@ -24,6 +24,8 @@ ActivityModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String activityId;
+
     private String franchiseId;
 
     private String activityName;

@@ -48,6 +48,7 @@ public class AllRoleController {
     public ResponseEntity<?> addRole(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody AllRole newRole)
     {
         if(roleType.equals("ADMIN")){
@@ -62,7 +63,7 @@ public class AllRoleController {
                     return ResponseClass.responseFailure("fields cannot be empty");
                 }
                 else{
-                    allRoleService.roleSaved(newRole, franchiseId);
+                    allRoleService.roleSaved(newRole, franchiseId, uniqueId);
                     return ResponseClass.responseSuccess("new role saved", "roleAdded", newRole);
                 }
             }

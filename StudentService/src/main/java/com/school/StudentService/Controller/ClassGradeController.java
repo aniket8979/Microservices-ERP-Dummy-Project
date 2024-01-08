@@ -3,6 +3,7 @@ package com.school.StudentService.Controller;
 import com.school.StudentService.DTO.ClassDTO;
 import com.school.StudentService.Exception.ResponseClass;
 import com.school.StudentService.Model.ClassGrade;
+import com.school.StudentService.Model.ClassSection;
 import com.school.StudentService.Service.ClassGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -90,9 +91,15 @@ public class ClassGradeController {
         if(!thisClass.getFranchiseId().equals(franchiseId)){
             return ResponseClass.responseFailure("class not found");
         }
+        try {
+            classGradeService.classGradeRepo.delete(thisClass);
+            return ResponseClass.responseSuccess("class successfully deleted");
+        }catch (Exception e){
 
-        classGradeService.classGradeRepo.delete(thisClass);
-        return ResponseClass.responseSuccess("class successfully deleted");
+            return ResponseClass.responseFailure("class cannot be deleted without deleting sections");
+        }
+
+
     }
 
 

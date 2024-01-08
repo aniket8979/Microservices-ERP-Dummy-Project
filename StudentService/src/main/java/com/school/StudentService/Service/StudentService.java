@@ -4,14 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.StudentService.DTO.StudentDTO;
 import com.school.StudentService.Exception.BadRequestException;
+import com.school.StudentService.Exception.EventAlreadyExists;
 import com.school.StudentService.Exception.GlobalExceptionHandler;
 import com.school.StudentService.Exception.InternalServerException;
-import com.school.StudentService.Exception.ResponseClass;
+import com.school.StudentService.FeignService.StaffServiceFeign;
 import com.school.StudentService.Model.StudentModel;
 import com.school.StudentService.Repo.ClassSectionRepo;
 import com.school.StudentService.Repo.StudentRepo;
 import com.school.StudentService.Model.ClassSection;
-import org.bouncycastle.asn1.cms.OtherRecipientInfo;
+import org.hibernate.id.CompositeNestedGeneratedValueGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,12 +29,15 @@ public class StudentService {
     @Autowired
     public ClassSectionRepo classSectionRepo;
 
+    @Autowired
+    public StaffServiceFeign staffServiceFeign;
+
 
 
 
     public StudentModel SaveStudent(String studentDataString, String franchiseId, String uniqueId, MultipartFile profilePic){
 
-        // JSON serialization
+        // JSON serialization & processing
         ObjectMapper jsonobj = new ObjectMapper();
         StudentDTO studentData = new StudentDTO();
         try {
@@ -41,10 +45,13 @@ public class StudentService {
         } catch (JsonProcessingException e) {
             throw new BadRequestException("invalid json formatting");
         }
+
+
+        // Saving data related to student registration
         StudentModel student = studentData.getStudentInfo();
         boolean stuExist = studentRepo.existsByemail(student.getEmail());
         if (stuExist) {
-          throw new BadRequestException("student already exists");
+          throw new EventAlreadyExists("student email already exists");
         }
 
         // Generating UserId
@@ -58,9 +65,25 @@ public class StudentService {
             }
         }
 
+        // Saving data related to Students Class and Section Information.
         String section = studentData.getClassData().getSectionId();
         ClassSection classGradeData = classSectionRepo.findBysectionId(section);
 
+
+        // Setting Students Role related information.
+        String role = studentData.getRoleInfo();
+        String roleId;
+        if(role == null) {
+            roleId = "USER";
+            staffServiceFeign.saveStudentInRole(student.getEmail(), student.getUserId(), franchiseId, roleId);
+
+        }else {
+
+            staffServiceFeign.saveStudentInRole(student.getEmail(), student.getUserId(), franchiseId, role);
+        }
+
+
+        // Saving profile picture for student and setting its path.
         try {
             UtilitiesServices.fileSave(profilePic, UtilitiesServices.profilePicPath, student.getUserId());
         }catch (Exception e) {

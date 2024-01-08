@@ -14,4 +14,5 @@ public interface AllRoleRepo extends JpaRepository<AllRole, Integer> {
     List<AllRole> findAllByfranchiseId(String franchiseId);
     AllRole getReferenceByroleId(String roleId);
 
+    boolean existsByroleId(String roleId);
 }

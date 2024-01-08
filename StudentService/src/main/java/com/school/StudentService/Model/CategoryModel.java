@@ -25,15 +25,7 @@ public class CategoryModel {
 
     private String franchiseId;
 
-    // SRMGZ-Cat-01 : SRMABC01
-
-    // SRM-GZ-H-01 : SRM
-
-    // AKG-GZ : AKG
-
-    // AKGIC-GZ : AKGIC
-
-//    private String recordId;
+    private String categoryId;
 
     private String categoryName;
 

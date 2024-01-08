@@ -42,7 +42,7 @@ public class CategoryService {
             categoryRepo.save(thisCategory);
 
             CategoryDTO editCategory = new CategoryDTO();
-            editCategory.setId(thisCategory.getId());
+            editCategory.setCategoryId(thisCategory.getCategoryId());
             editCategory.setCategoryName(thisCategory.getCategoryName());
             editCategory.setCategoryDescription(thisCategory.getCategoryDescription());
             return editCategory;
@@ -51,8 +51,8 @@ public class CategoryService {
     }
 
 
-    public boolean deleteCategory(int id, String franchiseId) {
-        CategoryModel getCategory = categoryRepo.findCategoryById(id);
+    public boolean deleteCategory(String categoryId, String franchiseId) {
+        CategoryModel getCategory = categoryRepo.findBycategoryId(categoryId);
         if(getCategory != null){
             if(getCategory.getFranchiseId().equals(franchiseId)){
                 categoryRepo.delete(getCategory);
@@ -62,10 +62,21 @@ public class CategoryService {
         return false;
     }
 
-    public Object saveNewCategory(CategoryModel category, String franchiseId) {
+    public Object saveNewCategory(CategoryModel category, String franchiseId, String uniqueId) {
         List<CategoryModel> allCategories = categoryRepo.findAllByfranchiseId(franchiseId);
-        boolean found = allCategories.stream().anyMatch(c -> c.getCategoryName().equals(category.getCategoryName()));
-        if(!found){
+        boolean exist = allCategories.stream().anyMatch(c -> c.getCategoryName().equals(category.getCategoryName()));
+        if(!exist){
+            String categoryId;
+            while(true)
+            {
+                categoryId = UtilitiesServices.generateRecordId(uniqueId, "ctg");
+                boolean found = categoryRepo.existsBycategoryId(categoryId);
+                if(!found){
+                    category.setCategoryId(categoryId);
+                    break;
+                }
+            }
+
             category.setFranchiseId(franchiseId);
             categoryRepo.save(category);
             return true;
@@ -77,6 +88,15 @@ public class CategoryService {
     public boolean doesThisExist(String franchiseId, String categoryName){
         List<CategoryModel> allCategories = categoryRepo.findAllByfranchiseId(franchiseId);
         return allCategories.stream().anyMatch(c -> c.getCategoryName().equals(categoryName));
+    }
+
+
+    public CategoryDTO setInDTO(CategoryModel category){
+        CategoryDTO categoryDto = new CategoryDTO();
+        categoryDto.setCategoryId(category.getCategoryId());
+        categoryDto.setCategoryName(category.getCategoryName());
+        categoryDto.setCategoryDescription(category.getCategoryDescription());
+        return categoryDto;
     }
 
 

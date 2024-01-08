@@ -13,8 +13,20 @@ public class AllRoleService {
     @Autowired
     private AllRoleRepo allRoleRepo;
 
+    @Autowired
+    private Dry utilities;
 
-    public void roleSaved(AllRole roleData, String franchiseId) {
+    public void roleSaved(AllRole roleData, String franchiseId, String uniqueId) {
+        String roleId;
+        while(true){
+            roleId = utilities.generateRecordId(uniqueId, "tch");
+            boolean found = allRoleRepo.existsByroleId(roleId);
+            if(!found){
+                roleData.setRoleId(roleId);
+                break;
+            }
+        }
+
         roleData.setFranchiseId(franchiseId);
         allRoleRepo.save(roleData);
     }

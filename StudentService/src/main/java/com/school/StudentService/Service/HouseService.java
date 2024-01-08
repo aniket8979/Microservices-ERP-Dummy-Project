@@ -41,7 +41,7 @@ public class HouseService {
             }
             houseRepo.save(thisHouse);
             HouseDTO houseResp = new HouseDTO();
-            houseResp.setId(thisHouse.getId());
+            houseResp.setHouseId(thisHouse.getHouseId());
             houseResp.setHouseName(thisHouse.getHouseName());
             houseResp.setHouseDescription(thisHouse.getHouseDescription());
             houseResp.setHouseColour(thisHouse.getHouseColour());
@@ -52,11 +52,23 @@ public class HouseService {
 
 
 
-    public Object addNewHouse(HouseModel house, String franchiseId)
+    public Object addNewHouse(HouseModel house, String franchiseId, String uniqueId)
      {
         List<HouseModel> allHouses = houseRepo.findAllByfranchiseId(franchiseId);
-        boolean found = allHouses.stream().anyMatch(h -> h.getHouseName().equals(house.getHouseName()));
-        if(!found){
+        boolean exist = allHouses.stream().anyMatch(h -> h.getHouseName().equals(house.getHouseName()));
+        if(!exist){
+
+            String houseId;
+            while(true)
+            {
+                houseId = UtilitiesServices.generateRecordId(uniqueId, "hse");
+                boolean found = houseRepo.existsByhouseId(houseId);
+                if(!found){
+                    house.setHouseId(houseId);
+                    break;
+                }
+            }
+
             house.setFranchiseId(franchiseId);
             houseRepo.save(house);
             return true;
@@ -74,9 +86,12 @@ public class HouseService {
     }
 
 
-
-
-
-
-
+    public HouseDTO setInDTO(HouseModel house) {
+        HouseDTO houseDTO = new HouseDTO();
+        houseDTO.setHouseId(house.getHouseId());
+        houseDTO.setHouseName(house.getHouseName());
+        houseDTO.setHouseColour(house.getHouseColour());
+        houseDTO.setHouseDescription(house.getHouseDescription());
+        return houseDTO;
+    }
 }

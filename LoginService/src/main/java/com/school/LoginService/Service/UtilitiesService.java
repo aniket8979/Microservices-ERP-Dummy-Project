@@ -56,7 +56,7 @@ public class UtilitiesService {
 
 
 
-    public String getOtpSetUser(String email, String franchiseId , String subject, String body, int otp, String roleType){
+    public String getOtpSetUser(String email, String franchiseId , String subject, String body, int otp, String roleType, String uniqueId){
 
         Otp otpSent = new Otp();
 
@@ -87,6 +87,7 @@ public class UtilitiesService {
                 newuser.setFranchiseId(franchiseId);
                 newuser.setRole(roleType);
                 newuser.setEmail(email);
+                newuser.setUniqueId(uniqueId);
                 loginRepo.save(newuser);
                 return jwtService.generateToken(email, "random String", roleType, "None" );
             }

@@ -40,6 +40,19 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: student-fee
+          uri: lb://student-fee
+          predicates:
+            - Path=/fee/**
+          filters:
+            - AuthenticationFilter
+
+        - id: event-manager
+          uri: lb://event-manager
+          predicates:
+            - Path=/events/**
+          filters:
+            - AuthenticationFilter
 
 
 eureka:

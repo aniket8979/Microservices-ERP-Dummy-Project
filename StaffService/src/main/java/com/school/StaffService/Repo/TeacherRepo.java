@@ -12,7 +12,7 @@ public interface TeacherRepo extends JpaRepository<TeacherModel, Integer > {
 
 
 //    @Query("SELECT a FROM TeacherModel.java a where a.userId = :userId")
-    List<TeacherModel> findByuserId(String userid);
+    TeacherModel findByuserId(String userid);
 
     TeacherModel getReferenceByuserId(String userid);
 
@@ -22,4 +22,6 @@ public interface TeacherRepo extends JpaRepository<TeacherModel, Integer > {
 
 
     List<TeacherModel> findAllByfranchiseId(String franchiseId);
+
+    boolean existsByuserId(String userId);
 }

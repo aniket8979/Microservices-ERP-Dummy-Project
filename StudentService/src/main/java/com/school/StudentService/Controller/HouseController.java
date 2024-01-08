@@ -1,7 +1,10 @@
 package com.school.StudentService.Controller;
 
 
+import com.school.StudentService.DTO.CategoryDTO;
+import com.school.StudentService.DTO.HouseDTO;
 import com.school.StudentService.Exception.ResponseClass;
+import com.school.StudentService.Model.CategoryModel;
 import com.school.StudentService.Model.HouseModel;
 import com.school.StudentService.Service.HouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +28,11 @@ public class HouseController {
     public ResponseEntity<?> addNewHouse(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody HouseModel house) {
         Map<String, Object> resp = new HashMap<>();
         if(roleType.equals("ADMIN")) {
-            Object saved = houseService.addNewHouse(house, franchiseId);
+            Object saved = houseService.addNewHouse(house, franchiseId, uniqueId);
             if(saved.equals(true)){
                 return ResponseClass.responseSuccess("New House Added Successfully", "house", house);
             }
@@ -77,16 +81,35 @@ public class HouseController {
     }
 
 
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getHouseById(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestParam("houseId") String houseId)
+    {
+        HouseModel house = houseService.houseRepo.findByhouseId(houseId);
+        if(house == null){
+            return ResponseClass.responseFailure("category not found");
+        }
+        HouseDTO houseDto = houseService.setInDTO(house);
+        return ResponseClass.responseSuccess("category info", "category", houseDto);
+    }
+
+
+
+
+
+
     @PostMapping("/delete")
     public ResponseEntity<?> deleteHouse(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @RequestParam("houseId") int houseId)
+            @RequestParam("houseId") String houseId)
     {
         if(!(roleType.equals("ADMIN"))){
             return ResponseClass.responseFailure("access denied");
         }
-        HouseModel thisHouse = houseService.houseRepo.findHouseById(houseId);
+        HouseModel thisHouse = houseService.houseRepo.findByhouseId(houseId);
         if(thisHouse == null){
             System.out.println("null house executing");
             return ResponseClass.responseFailure("house not found");

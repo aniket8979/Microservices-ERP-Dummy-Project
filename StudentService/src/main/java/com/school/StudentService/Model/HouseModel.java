@@ -24,6 +24,8 @@ public class HouseModel {
 
     private String franchiseId;
 
+    private String houseId;
+
     private String houseName;
 
     private String houseColour;

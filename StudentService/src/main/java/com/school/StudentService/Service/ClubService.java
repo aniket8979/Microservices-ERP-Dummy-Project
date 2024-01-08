@@ -47,20 +47,14 @@ public class ClubService {
             }
             clubRepo.save(thisClub);
 
-            ClubDTO editClub = new ClubDTO();
-            editClub.setId(thisClub.getId());
-            editClub.setClubName(thisClub.getClubName());
-            editClub.setClubDescription(thisClub.getClubDescription());
-            editClub.setClubIcon(thisClub.getClubIcon());
-            editClub.setClubColour(thisClub.getClubColour());
-            return editClub;
+            return setInDTO(thisClub);
         }
         return false;
     }
 
 
-    public boolean deleteClub(int id, String franchiseId) {
-        ClubModel getClub = clubRepo.findClubById(id);
+    public boolean deleteClub(String clubId, String franchiseId) {
+        ClubModel getClub = clubRepo.findByclubId(clubId);
         if(getClub != null){
             if(getClub.getFranchiseId().equals(franchiseId)){
                 clubRepo.delete(getClub);
@@ -71,9 +65,19 @@ public class ClubService {
     }
 
 
-    public Object saveNewClub(ClubModel clubData, String franchiseId) {
-        boolean found = doesThisExist(franchiseId, clubData.getClubName());
-        if(!found){
+    public Object saveNewClub(ClubModel clubData, String franchiseId, String uniqueId) {
+        boolean exist = doesThisExist(franchiseId, clubData.getClubName());
+        if(!exist){
+            String clubId;
+            while(true)
+            {
+                clubId = UtilitiesServices.generateRecordId(uniqueId, "clb");
+                boolean found = clubRepo.existsByclubId(clubId);
+                if(!found){
+                    clubData.setClubId(clubId);
+                    break;
+                }
+            }
             clubData.setFranchiseId(franchiseId);
             clubRepo.save(clubData);
             return true;
@@ -85,6 +89,18 @@ public class ClubService {
     public boolean doesThisExist(String franchiseId, String clubName){
         List<ClubModel> allClubs = clubRepo.findAllByfranchiseId(franchiseId);
         return allClubs.stream().anyMatch(c -> c.getClubName().equals(clubName));
+    }
+
+
+
+    public ClubDTO setInDTO(ClubModel club){
+        ClubDTO clubDto = new ClubDTO();
+        clubDto.setClubId(club.getClubId());
+        clubDto.setClubName(club.getClubName());
+        clubDto.setClubDescription(club.getClubDescription());
+        clubDto.setClubIcon(club.getClubIcon());
+        clubDto.setClubColour(club.getClubColour());
+        return clubDto;
     }
 
 

@@ -16,6 +16,8 @@ public class ActivityDTO {
 
     private String activityName;
 
+    private String activityId;
+
     private String activityColour;
 
     private String activityIcon;

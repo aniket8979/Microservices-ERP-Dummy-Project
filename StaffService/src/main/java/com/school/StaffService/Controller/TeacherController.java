@@ -6,18 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.StaffService.DTO.TeacherDTO;
 import com.school.StaffService.Exception.BadRequestException;
 import com.school.StaffService.Exception.GlobalExceptionHandler;
-import com.school.StaffService.Exception.ResourceNotFoundException;
 import com.school.StaffService.Exception.ResponseClass;
 import com.school.StaffService.FeignService.ClassGradeFeign;
-import com.school.StaffService.Model.AllRole;
 import com.school.StaffService.Model.Document;
 import com.school.StaffService.Model.Roles;
 import com.school.StaffService.Model.TeacherModel;
 import com.school.StaffService.Repo.AllRoleRepo;
 import com.school.StaffService.Repo.DocRepo;
-import com.school.StaffService.Repo.RolesRepo;
 import com.school.StaffService.Repo.TeacherRepo;
 import com.school.StaffService.Service.Dry;
+import com.school.StaffService.Service.RoleService;
 import com.school.StaffService.Service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +40,10 @@ public class TeacherController {
     private DocRepo docRepo;
 
     @Autowired
-    private RolesRepo rolesRepo;
+    private RoleService roleService;
 
     @Autowired(required = true)
-    private Dry handleFile;
+    private Dry utilities;
 
     @Autowired(required = true)
     private ClassGradeFeign classGradeFeign;
@@ -54,10 +52,12 @@ public class TeacherController {
     private AllRoleRepo allRoleRepo;
 
     @PostMapping(path = "/register")
-    ResponseEntity<?> testRequestInput(
+    ResponseEntity<?> TeacherRegisterInput(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("email") String email,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
+
             @RequestParam Map<String, MultipartFile> fileMap,
             @RequestParam("profilePic") MultipartFile dp,
             @RequestParam("data") String jsondata)
@@ -68,6 +68,7 @@ public class TeacherController {
 
             System.out.println("jai shree ram");
             ObjectMapper jsonobj = new ObjectMapper();
+
             fileMap.remove("profilePic");
             TeacherDTO data = null;
             try {
@@ -78,54 +79,52 @@ public class TeacherController {
             }
 
             TeacherModel userdata = data.getUserReq();
-            TeacherDTO.RoleDTO userrole = data.getRoleReq();
+            String userrole = data.getRoleReq();
             List<Document> userdoc = data.getDocReq();
 
 
 
-            String dppath = handleFile.profilePicPath;
+            String dppath = utilities.profilePicPath;
             MultipartFile userdp = dp;
             String dpname = userdata.getUsername();
-            handleFile.fileSave(dp, dppath, dpname);
+
+            utilities.fileSave(dp, dppath, dpname);
+
             userdata.setDpPath(dppath + "/" + dpname);
 
-            try {
-                if(!teacherRepo.existsByemail(userdata.getEmail())){
-                    userdata.setFranchiseId(franchiseId);
-                    teacherRepo.save(userdata);
-                    System.out.println("checking if its working right");
-                }else {
-                    throw new BadRequestException("Staff with this Email Already Exist");
+            String userId;
+            while(true){
+                userId = utilities.generateRecordId(uniqueId, "tch");
+                boolean found = teacherRepo.existsByuserId(userId);
+                if(!found){
+                    userdata.setUserId(userId);
+                    break;
                 }
-            } catch (Exception e) {
-                throw new BadRequestException("Error in Staff Input Data");
             }
 
-            try {
-                AllRole thisRole = allRoleRepo.getReferenceByroleId(userrole.getRoleId());
-                if(thisRole != null) {
-                    Roles addingRole = new Roles();
-                    addingRole.setRoleUserId(userdata.getUserId());
-                    addingRole.setRoleId(thisRole.getRoleId());
-                    addingRole.setRole(thisRole.getRoleName());
-                    addingRole.setEmail(userdata.getEmail());
-                    addingRole.setRoleUserId(userdata.getUserId());
-                    addingRole.setRoleType(thisRole.getRoleType());
-                    rolesRepo.save(addingRole);
-                }
-                else {
-                    throw new ResourceNotFoundException("RoleType not found");
-                }
-            } catch (Exception e) {
-                System.out.println("Some error with role " + e);
-                return GlobalExceptionHandler.internalServerError("error");
+            boolean found = teacherRepo.existsByemail(userdata.getEmail());
+            if(found){
+                throw new BadRequestException("Staff with this Email Already Exist");
+            }else {
+                userdata.setFranchiseId(franchiseId);
             }
+
+
+            if(userrole == null) {
+                userrole = "USER";
+            }
+            boolean roleSaved = roleService.saveRoleForUser(userrole, userId, userdata.getEmail(), franchiseId);
+
 
             int itr = 0;
             Map<String, MultipartFile> files;
             files = fileMap;
             boolean documentSaved = teacherService.saveDocRegister(userdoc, files, userdata.getUserId(), franchiseId);
+
             if(documentSaved){
+
+                teacherRepo.save(userdata);
+
                 return ResponseClass.responseSuccess("staff added successfully", "staffData", data);
             }
             return ResponseClass.responseSuccess("document not saved properly", "staffData", data);
@@ -157,6 +156,9 @@ public class TeacherController {
     {
         if(roleType.equals("ADMIN")){
             TeacherModel nn = teacherService.findOneByUserId(userid);
+            if(nn == null){
+                return ResponseClass.responseFailure("user not found");
+            }
             if(franchiseId.equals(nn.getFranchiseId())){
                 return ResponseEntity.ok(nn);
             }
@@ -164,6 +166,26 @@ public class TeacherController {
         }
         return ResponseClass.responseFailure("access denied");
     }
+
+
+    @GetMapping("/delete/{userid}")
+    public ResponseEntity<?>  deleteUser (
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType,
+            @PathVariable("userid") String userid)
+    {
+        if(roleType.equals("ADMIN")) {
+            TeacherModel nn = teacherService.findOneByUserId(userid);
+            if(nn == null) {
+                return ResponseClass.responseFailure("user not found");
+            }
+            teacherRepo.delete(nn);
+            return ResponseClass.responseSuccess("user deleted");
+        }
+        return ResponseClass.responseFailure("access denied");
+    }
+
+
 
 
 
@@ -193,6 +215,17 @@ public class TeacherController {
         return null;
     }
 
+
+
+    @GetMapping("/checking")
+    public String checking(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("email") String email,
+            @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId)
+    {
+        return franchiseId + " " + email + " " + roleType + " " + uniqueId;
+    }
 
 
 

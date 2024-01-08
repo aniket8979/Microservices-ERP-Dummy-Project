@@ -7,6 +7,7 @@ import com.school.StaffService.Model.TeacherModel;
 import com.school.StaffService.Repo.AllRoleRepo;
 import com.school.StaffService.Repo.RolesRepo;
 import com.school.StaffService.Repo.TeacherRepo;
+import com.school.StaffService.Service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,10 @@ public class RoleController {
 
     @Autowired
     private RolesRepo rolesRepo;
+
+
+    @Autowired
+    private RoleService roleService;
 
     @Autowired
     private AllRoleRepo allRoleRepo;
@@ -110,6 +115,23 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).build();
     }
 
+
+
+    //// Feign Controller Methods ///
+    @PostMapping("/addNewRole")
+    public boolean addNewRoleFeign(
+            @RequestParam("email") String email,
+            @RequestParam("userId") String userId,
+            @RequestParam("franchiseId") String franchiseId,
+            @RequestParam("roleId") String roleId)
+    {
+        boolean success = roleService.saveRoleForUser(roleId, userId, email, franchiseId);
+        if(success){
+            return true;
+        }
+        return false;
+
+    }
 
 
 

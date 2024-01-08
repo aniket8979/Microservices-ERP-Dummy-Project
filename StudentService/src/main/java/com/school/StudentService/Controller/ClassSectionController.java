@@ -85,7 +85,7 @@ public class ClassSectionController {
         if(!thisSection.getFranchiseId().equals(franchiseId)){
             return ResponseClass.responseFailure("section not found");
         }
-        classSectionService.classSectionRepo.delete(thisSection);
+        classSectionService.deleteSection(thisSection);
         return ResponseClass.responseSuccess("section successfully deleted");
     }
 

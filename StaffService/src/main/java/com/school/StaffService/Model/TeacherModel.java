@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.List;
@@ -109,12 +111,18 @@ public class TeacherModel {
     @Column(name = "dpPath")
     private String dpPath;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Transient
     private ClassGrade classid;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Transient
     private List<TimeTable> teaTimeTable;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Transient
     private List<SubjectCourse> subjects;
 

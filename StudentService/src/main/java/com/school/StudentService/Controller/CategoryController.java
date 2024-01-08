@@ -2,6 +2,7 @@ package com.school.StudentService.Controller;
 
 
 import com.school.StudentService.DTO.CategoryDTO;
+import com.school.StudentService.Exception.MethodNotAllowedException;
 import com.school.StudentService.Exception.ResourceNotFoundException;
 import com.school.StudentService.Exception.ResponseClass;
 import com.school.StudentService.Model.CategoryModel;
@@ -26,11 +27,12 @@ public class CategoryController {
     public ResponseEntity<?> addNewCategory(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody CategoryModel category)
     {
         Map<String, Object> resp = new HashMap<>();
         if(roleType.equals("ADMIN")){
-            Object saved = categoryService.saveNewCategory(category, franchiseId);
+            Object saved = categoryService.saveNewCategory(category, franchiseId, uniqueId);
             if(saved.equals(true)) {
                 resp.put("status", "success");
                 resp.put("msg", "category added successfully");
@@ -54,7 +56,7 @@ public class CategoryController {
         List<CategoryDTO> allCategories = new ArrayList<>();
         for(CategoryModel category : categories){
             CategoryDTO thisCategory = new CategoryDTO();
-            thisCategory.setId(category.getId());
+            thisCategory.setCategoryId(category.getCategoryId());
             thisCategory.setCategoryName(category.getCategoryName());
             thisCategory.setCategoryDescription(category.getCategoryDescription());
             allCategories.add(thisCategory);
@@ -87,13 +89,27 @@ public class CategoryController {
     @PostMapping("/delete")
     public ResponseEntity<?> deleteCategory(
             @RequestHeader("franchiseId") String franchiseId,
-            @RequestParam("categoryId") int id)
+            @RequestParam("categoryId") String categoryId)
     {
-        boolean deleted = categoryService.deleteCategory(id, franchiseId);
+        boolean deleted = categoryService.deleteCategory(categoryId, franchiseId);
         if(deleted){
             return ResponseClass.responseSuccess("category deleted successfully");
         }
         throw new ResourceNotFoundException("invalid category");
+    }
+
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getCategoryById(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestParam("categoryId") String categoryId)
+    {
+        CategoryModel category = categoryService.categoryRepo.findBycategoryId(categoryId);
+        if(category == null){
+            return ResponseClass.responseFailure("category not found");
+        }
+        CategoryDTO categoryDto = categoryService.setInDTO(category);
+        return ResponseClass.responseSuccess("category info", "category", categoryDto);
     }
 
 

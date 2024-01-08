@@ -12,4 +12,8 @@ public interface ActivityRepo extends JpaRepository<ActivityModel, Integer> {
 
     List<ActivityModel> findAllByfranchiseId(String franchiseId);
 
+    boolean existsByactivityId(String activityId);
+
+    ActivityModel findByactivityId(String activityId);
+
 }

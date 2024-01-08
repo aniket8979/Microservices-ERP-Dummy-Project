@@ -1,6 +1,7 @@
 package com.school.StudentService.Controller;
 
 
+import com.school.StudentService.DTO.ActivityDTO;
 import com.school.StudentService.Exception.ResponseClass;
 import com.school.StudentService.Model.ActivityModel;
 import com.school.StudentService.Repo.ActivityRepo;
@@ -30,11 +31,12 @@ public class ActivityContoller {
     public ResponseEntity<?> addNewActivity(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody ActivityModel activity) {
         Map<String, Object> resp = new HashMap<>();
 
         if(roleType.equals("ADMIN")) {
-            Object saved = activityService.addNewActivity(activity, franchiseId);
+            Object saved = activityService.addNewActivity(activity, franchiseId, uniqueId);
             if(saved.equals(true)){
                 return ResponseClass.responseSuccess("New Activity Added Successfully", "activity", activity);
             }
@@ -71,6 +73,19 @@ public class ActivityContoller {
     }
 
 
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getActivityById(@RequestParam("activityId") String activityId)
+    {
+        ActivityModel activity = activityRepo.findByactivityId(activityId);
+        ActivityDTO activityDTO =  activityService.setActivityInDTO(activity);
+        return ResponseClass.responseSuccess("activity data", "activity", activityDTO);
+
+    }
+
+
+
+
     @GetMapping("/getall")
     public ResponseEntity<?> getAllActivity(
             @RequestHeader("franchiseId") String franchiseId
@@ -85,13 +100,13 @@ public class ActivityContoller {
     public ResponseEntity<?> deleteActivity(
             @RequestHeader("franchiseId") String franchisId,
             @RequestHeader("roleType") String roleType,
-            @RequestParam("activityId") int activityId)
+            @RequestParam("activityId") String activityId)
     {
         if(!(roleType.equals("ADMIN"))){
             return ResponseClass.responseFailure("access denied");
         }
-        ActivityModel thisActivity = activityRepo.findActivityById(activityId);
-        if(!(activityRepo.existsById(activityId))){
+        ActivityModel thisActivity = activityRepo.findByactivityId(activityId);
+        if(!(activityRepo.existsByactivityId(activityId))){
             return ResponseClass.responseFailure("activity not found");
         }
         HashMap<String, String> deleted = new HashMap<>();

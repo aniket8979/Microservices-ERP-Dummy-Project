@@ -2,6 +2,7 @@ package com.school.StudentService.Exception;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,6 +19,26 @@ public class GlobalExceptionHandler {
         map.put("msg", ex.getMessage());
         map.put("status","failure");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+    }
+
+
+
+    @ExceptionHandler(MethodNotAllowedException.class)
+    public ResponseEntity<Map<String, Object>> badRequest(MethodNotAllowedException ex) {
+        Map map = new HashMap();
+        map.put("msg", ex.getMessage());
+        map.put("status","failure");
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(map);
+    }
+
+
+
+    @ExceptionHandler(EventAlreadyExists.class)
+    public ResponseEntity<Map<String, Object>> eventAlreadyExists(EventAlreadyExists ex) {
+        Map map = new HashMap();
+        map.put("msg", ex.getMessage());
+        map.put("status","failure");
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

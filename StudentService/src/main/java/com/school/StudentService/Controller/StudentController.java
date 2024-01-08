@@ -48,6 +48,47 @@ public class StudentController {
     }
 
 
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?> getOneStudent(
+            @PathVariable("userId") String studentId,
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType)
+    {
+
+        StudentModel obj = studentService.studentRepo.findByuserId(studentId);
+        if (obj != null){
+            if(!franchiseId.equals(obj.getFranchiseId())){
+                return ResponseClass.responseFailure("user not found");
+            }
+            return  ResponseClass.responseSuccess("student information", "student", obj);
+        }
+        return ResponseClass.responseFailure("user not found");
+    }
+
+
+
+    @GetMapping("/delete/{userId}")
+    public ResponseEntity<?> deleteStudentById(
+            @PathVariable("userId") String studentId,
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType)
+    {
+        if(roleType.equals("ADMIN")){
+            StudentModel obj = studentService.studentRepo.findByuserId(studentId);
+            if (obj != null){
+                if(!franchiseId.equals(obj.getFranchiseId())){
+                    return ResponseClass.responseFailure("user not found");
+                }
+
+                studentService.studentRepo.delete(obj);
+                return  ResponseClass.responseSuccess("user data deleted");
+            }
+            return ResponseClass.responseFailure("user not found");
+        }
+        return ResponseClass.responseFailure("access denied");
+    }
+
+
     @PostMapping("/test")
     public String testingStudent(@RequestParam("test") String testing) {
         return testing;
@@ -91,6 +132,17 @@ public class StudentController {
         return null;
     }
 
+
+
+    @GetMapping("/checking")
+    public String checking(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("email") String email,
+            @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId)
+    {
+        return franchiseId + " " + email + " " + roleType + " " + uniqueId;
+    }
 
 
 

@@ -33,11 +33,12 @@ public class ClubController {
     public ResponseEntity<?> addNewClub(
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
+            @RequestHeader("uniqueId") String uniqueId,
             @RequestBody ClubModel clubData)
     {
         Map<String, Object> resp = new HashMap<>();
         if(roleType.equals("ADMIN")){
-            Object saved = clubService.saveNewClub(clubData, franchiseId);
+            Object saved = clubService.saveNewClub(clubData, franchiseId, uniqueId);
             if(saved.equals(true)) {
                 resp.put("status", "success");
                 resp.put("msg", "clubData added successfully");
@@ -61,7 +62,7 @@ public class ClubController {
         List<ClubDTO> allClubs = new ArrayList<>();
         for(ClubModel club : clubs){
             ClubDTO thisClub = new ClubDTO();
-            thisClub.setId(club.getId());
+            thisClub.setClubId(club.getClubId());
             thisClub.setClubName(club.getClubName());
             thisClub.setClubDescription(club.getClubDescription());
             thisClub.setClubColour(club.getClubColour());
@@ -92,13 +93,24 @@ public class ClubController {
         return ResponseClass.responseFailure("access denied");
     }
 
+    @GetMapping("/get")
+    public ResponseEntity<?> getClubById(
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestParam("clubId") String clubId)
+    {
+
+        ClubModel club = clubRepo.findByclubId(clubId);
+        ClubDTO clubDto = clubService.setInDTO(club);
+        return ResponseClass.responseSuccess("club information", "club", clubDto);
+    }
+
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteClub(
             @RequestHeader("franchiseId") String franchiseId,
-            @RequestParam("clubId") int id)
+            @RequestParam("clubId") String clubId)
     {
-        boolean deleted = clubService.deleteClub(id, franchiseId);
+        boolean deleted = clubService.deleteClub(clubId, franchiseId);
         if(deleted){
             return ResponseClass.responseSuccess("Club Deleted Successfully");
         }

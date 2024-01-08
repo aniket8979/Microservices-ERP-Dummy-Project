@@ -9,5 +9,7 @@ public interface HouseRepo extends JpaRepository<HouseModel, Integer> {
 
     List<HouseModel> findAllByfranchiseId(String franchiseId);
 
-    HouseModel findHouseById(int houseId);
+    boolean existsByhouseId(String houseId);
+
+    HouseModel findByhouseId(String houseId);
 }

@@ -17,18 +17,9 @@ import java.util.List;
 @Setter
 public class TeacherDTO {
     private TeacherModel userReq;
-    private RoleDTO roleReq;
+    private String roleReq;
     private List<Document> docReq;
 
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    public static class RoleDTO {
-
-        private String roleId;
-
-    }
 }
 

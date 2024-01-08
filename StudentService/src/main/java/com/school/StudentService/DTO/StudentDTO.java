@@ -2,6 +2,7 @@ package com.school.StudentService.DTO;
 
 import com.school.StudentService.Model.StudentModel;
 import com.school.StudentService.Model.ClassSection;
+import com.school.StudentService.Transient.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ public class StudentDTO {
 
     private StudentModel studentInfo;
 
-    private ClassSection classData;
+    private String roleInfo;
 
+    private ClassSection classData;
+    
 }

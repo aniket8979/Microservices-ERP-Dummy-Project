@@ -65,21 +65,14 @@ public class LoginService {
 
 
     public HashMap<String, String> loginGeneratetoken(LoginModel loginDetails){
-        HashMap<String,String> response =  new HashMap<String,String>();
+        HashMap<String,String> response =  new HashMap<>();
         LoginModel loginInfo = loginRepo.getReferenceByemail(loginDetails.getEmail());
         if (loginInfo != null) {
             String userPassword = loginInfo.getPassword();
             if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
                 System.out.println(loginInfo.getFranchiseId()+" this is franhciseId of user");
                 System.out.println(loginInfo.getRole()+" this is role of user");
-                SuperAdminModel franchiseAdmin = superAdminRepo.findByfranchiseId(loginInfo.getFranchiseId());
-                if(franchiseAdmin == null){
-                    System.out.println("franchise admin not found");
-                    response.put("status", "failed");
-                    response.put("msg", "user not found");
-                    return response;
-                }
-                String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole(), franchiseAdmin.getUniqueId());
+                String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole(), loginInfo.getUniqueId());
                 response.put("token", token);
                 response.put("status","success");
                 response.put("msg", "user logged in");
@@ -139,7 +132,6 @@ public class LoginService {
         HashMap<String,String> response = new HashMap<>();
 
         // Retreiving If User Information Exists
-
         try{
             otpRepo.deleteAllByemail(email);
             System.out.println("old OTP deleted");
@@ -149,7 +141,7 @@ public class LoginService {
 
         LoginModel loginUser = loginRepo.getReferenceByemail(email);
         if(loginUser != null){
-            token = utilitiesService.getOtpSetUser(email, loginUser.getFranchiseId(), subject, body, otp, loginUser.getRole() );
+            token = utilitiesService.getOtpSetUser(email, loginUser.getFranchiseId(), subject, body, otp, loginUser.getRole(), loginUser.getUniqueId());
             if(!token.equals("notSent")){
                 System.out.println("From login table");
                 response.put("token", token);
@@ -164,7 +156,7 @@ public class LoginService {
         if(student != null){
             System.out.println("from Login Service, student: "+ student.getEmail());
             String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, student.getFranchiseId(), subject, body, otp, roleType);
+            token = utilitiesService.getOtpSetUser(email, student.getFranchiseId(), subject, body, otp, roleType, student.getUserId() );
 
             if(!token.equals("notSent")){
                 response.put("token", token);
@@ -179,7 +171,7 @@ public class LoginService {
         if(teacher != null){
             System.out.println("From Login Service, teacher:"+teacher.getEmail());
             String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, teacher.getFranchiseId(), subject, body, otp, roleType);
+            token = utilitiesService.getOtpSetUser(email, teacher.getFranchiseId(), subject, body, otp, roleType, teacher.getUserId());
             if(!token.equals("notSent")){
                 response.put("token", token);
                 response.put("status","success");
@@ -193,7 +185,7 @@ public class LoginService {
         if(admin != null){
             System.out.println("From Login Service, Admin :"+admin.getEmail());
             String roleType = admin.getAdminRole();
-            token = utilitiesService.getOtpSetUser(email, admin.getFranchiseId(), subject, body, otp, roleType);
+            token = utilitiesService.getOtpSetUser(email, admin.getFranchiseId(), subject, body, otp, roleType, admin.getUniqueId());
             if(!token.equals("notSent")){
                 response.put("token", token);
                 response.put("status","success");

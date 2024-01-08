@@ -23,6 +23,8 @@ public class ClubModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String clubId;
+
     private String franchiseId;
 
     private String clubName;
