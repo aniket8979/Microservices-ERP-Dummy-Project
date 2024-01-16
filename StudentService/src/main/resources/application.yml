@@ -16,5 +16,5 @@ eureka:
 server:
   port: 8082
 
-# One To Many on Hetel side
+# One To Many on Hotel side
 # Many To One on Subscription side

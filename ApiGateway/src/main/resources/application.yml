@@ -54,6 +54,12 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: library-management
+          uri: lb://library-management
+          predicates:
+            - Path=/author/**, /books/**, /genres/**, /member/**, /transactions/**
+          filters:
+            - AuthenticationFilter
 
 eureka:
   instance:
