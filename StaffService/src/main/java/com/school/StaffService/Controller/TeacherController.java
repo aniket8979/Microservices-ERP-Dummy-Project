@@ -59,7 +59,6 @@ public class TeacherController {
             @RequestHeader("uniqueId") String uniqueId,
 
             @RequestParam Map<String, MultipartFile> fileMap,
-            @RequestParam("profilePic") MultipartFile dp,
             @RequestParam("data") String jsondata)
     {
 
@@ -83,14 +82,14 @@ public class TeacherController {
             List<Document> userdoc = data.getDocReq();
 
 
+            if (fileMap.containsKey("profilePic")){
+                MultipartFile dp = fileMap.get("profilePic");
+                String dppath = utilities.profilePicPath;
+                String dpname = userdata.getUsername();
+                utilities.fileSave(dp, dppath, dpname);
+                userdata.setDpPath(dppath + "/" + dpname);
+            }
 
-            String dppath = utilities.profilePicPath;
-            MultipartFile userdp = dp;
-            String dpname = userdata.getUsername();
-
-            utilities.fileSave(dp, dppath, dpname);
-
-            userdata.setDpPath(dppath + "/" + dpname);
 
             String userId;
             while(true){
@@ -143,7 +142,6 @@ public class TeacherController {
             @RequestHeader("uniqueId") String uniqueId,
 
             @RequestParam Map<String, MultipartFile> fileMap,
-            @RequestParam("profilePic") MultipartFile dp,
             @RequestBody TeacherDTO teacherRegister)
     {
 
@@ -168,13 +166,13 @@ public class TeacherController {
 
 
 
-            String dppath = utilities.profilePicPath;
-            MultipartFile userdp = dp;
-            String dpname = userdata.getUsername();
-
-            utilities.fileSave(dp, dppath, dpname);
-
-            userdata.setDpPath(dppath + "/" + dpname);
+            if (fileMap.containsKey("profilePic")){
+                MultipartFile dp = fileMap.get("profilePic");
+                String dppath = utilities.profilePicPath;
+                String dpname = userdata.getUsername();
+                utilities.fileSave(dp, dppath, dpname);
+                userdata.setDpPath(dppath + "/" + dpname);
+            }
 
             String userId;
             while(true){
