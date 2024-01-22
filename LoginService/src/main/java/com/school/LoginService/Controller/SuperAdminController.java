@@ -16,7 +16,7 @@ public class SuperAdminController {
     @Autowired
     private SuperAdminService superAdminService;
 
-    @PostMapping("/{thename}")
+    @GetMapping("/{thename}")
     public ResponseEntity<String> micCheck(@PathVariable("thename")String thatName){
         return ResponseEntity.ok(thatName);
     }

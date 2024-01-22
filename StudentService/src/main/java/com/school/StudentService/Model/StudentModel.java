@@ -86,8 +86,7 @@ public class StudentModel {
     @Column(name = "nationality")
     private String nationality;
 
-    @Column(name = "password")
-    private String password;
+
 
     @Column(name = "previousSchool")
     private String previousSchool;

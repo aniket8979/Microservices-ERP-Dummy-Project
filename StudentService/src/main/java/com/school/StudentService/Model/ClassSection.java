@@ -4,8 +4,6 @@ package com.school.StudentService.Model;
 import com.school.StudentService.Transient.TeacherModel;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 

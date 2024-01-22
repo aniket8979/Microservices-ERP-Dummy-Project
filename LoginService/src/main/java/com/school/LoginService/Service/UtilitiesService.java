@@ -8,10 +8,12 @@ import com.school.LoginService.Repo.OtpRepo;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Properties;
 
 
 @Component
@@ -46,11 +48,26 @@ public class UtilitiesService {
             helper.setTo(toMailId);
             helper.setSubject(subject);
             helper.setText(body);
+
+            configureMailSender();
+
             javaMailSender.send(message);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private void configureMailSender() {
+        if(javaMailSender instanceof JavaMailSenderImpl) {
+            JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) javaMailSender;
+
+            Properties mailProperties = new Properties();
+            mailProperties.setProperty("mail.smtp.starttls.enable", "true");
+            mailProperties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com"); // Replace with your mail server hostname
+
+            mailSenderImpl.setJavaMailProperties(mailProperties);
         }
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient(name = "staff-service" , url = "http://localhost:8080")
+@FeignClient(name = "staff-service")
 public interface StaffServiceFeign {
 
     @GetMapping("/teacher/stafffound")

@@ -73,8 +73,10 @@ public class TeacherController {
             try {
                 data = jsonobj.readValue(jsondata, TeacherDTO.class);
             } catch (JsonProcessingException e) {
-                System.out.println("Another Exception" + e);
-                throw new RuntimeException(e);
+
+                System.out.println("Another Exce ption" + e);
+
+                throw new BadRequestException("Invalid Json Format");
             }
 
             TeacherModel userdata = data.getUserReq();
@@ -110,6 +112,7 @@ public class TeacherController {
 
 
             if(userrole == null) {
+
                 userrole = "USER";
             }
             boolean roleSaved = roleService.saveRoleForUser(userrole, userId, userdata.getEmail(), franchiseId);
@@ -120,9 +123,9 @@ public class TeacherController {
             files = fileMap;
             boolean documentSaved = teacherService.saveDocRegister(userdoc, files, userdata.getUserId(), franchiseId);
 
-            if(documentSaved){
+            teacherRepo.save(userdata);
 
-                teacherRepo.save(userdata);
+            if(documentSaved){
 
                 return ResponseClass.responseSuccess("staff added successfully", "staffData", data);
             }
@@ -203,9 +206,9 @@ public class TeacherController {
             files = fileMap;
             boolean documentSaved = teacherService.saveDocRegister(userdoc, files, userdata.getUserId(), franchiseId);
 
-            if(documentSaved){
+            teacherRepo.save(userdata);
 
-                teacherRepo.save(userdata);
+            if(documentSaved){
 
                 return ResponseClass.responseSuccess("staff added successfully", "staffData", teacherRegister);
             }
@@ -242,14 +245,14 @@ public class TeacherController {
 
 
 
-    @GetMapping("/get/{userid}")
+    @PostMapping("/get")
     public ResponseEntity<?>  getUser (
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @PathVariable("userid") String userid)
+            @RequestParam("userId") String userId)
     {
         if(roleType.equals("ADMIN")){
-            TeacherModel nn = teacherService.findOneByUserId(userid);
+            TeacherModel nn = teacherService.findOneByUserId(userId);
             if(nn == null){
                 return ResponseClass.responseFailure("user not found");
             }
@@ -262,11 +265,11 @@ public class TeacherController {
     }
 
 
-    @GetMapping("/delete/{userid}")
+    @PostMapping("/delete")
     public ResponseEntity<?>  deleteUser (
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
-            @PathVariable("userid") String userid)
+            @RequestParam("userId") String userid)
     {
         if(roleType.equals("ADMIN")) {
             TeacherModel nn = teacherService.findOneByUserId(userid);

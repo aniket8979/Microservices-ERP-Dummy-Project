@@ -19,6 +19,9 @@ public class Dry {
     public String generateRecordId(String uniqueId, String type) {
         final String ALPHA_NUMERIC = "abcdefghijkmnoprstuv0123456789";
 
+        // SCR TCH 24 jkd4
+
+
         int time = LocalDate.now().getYear() - 2000;
         String recordUser = uniqueId+type+time;
 

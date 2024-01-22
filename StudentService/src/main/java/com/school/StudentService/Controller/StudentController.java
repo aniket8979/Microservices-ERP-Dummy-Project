@@ -24,7 +24,7 @@ public class StudentController {
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType,
             @RequestHeader("uniqueId") String uniqueId,
-            @RequestParam("profilePic") MultipartFile profilePic,
+            @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
             @RequestParam("data") String studentData)
     {
         if(roleType.equals("ADMIN")){

@@ -67,6 +67,7 @@ public class StudentService {
 
         // Saving data related to Students Class and Section Information.
         String section = studentData.getClassData().getSectionId();
+
         ClassSection classGradeData = classSectionRepo.findBysectionId(section);
 
 
@@ -84,13 +85,20 @@ public class StudentService {
 
 
         // Saving profile picture for student and setting its path.
-        try {
-            UtilitiesServices.fileSave(profilePic, UtilitiesServices.profilePicPath, student.getUserId());
-        }catch (Exception e) {
-            throw new InternalServerException("image cant be saved");
+        if(!profilePic.isEmpty()){
+            System.out.println("Saving profile picture for student");
+
+            try {
+                UtilitiesServices.fileSave(profilePic, UtilitiesServices.profilePicPath, student.getUserId());
+
+                student.setDpPath(UtilitiesServices.givePath(UtilitiesServices.profilePicPath, student.getUserId()));
+
+            }catch (Exception e) {
+                throw new InternalServerException("image cant be saved");
+            }
         }
+
         student.setFranchiseId(franchiseId);
-        student.setDpPath(UtilitiesServices.givePath(UtilitiesServices.profilePicPath, student.getUserId()));
         student.setClassSection(classGradeData);
 
         studentRepo.save(student);
