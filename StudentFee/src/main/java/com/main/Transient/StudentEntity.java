@@ -1,5 +1,4 @@
-package com.school.StudentService.Model;
-
+package com.main.Transient;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,17 +13,10 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "student")
-public class StudentModel {
+public class StudentEntity
+{
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    // Fields from User Super Class
-
     private String userId;
 
     private String franchiseId;
@@ -57,8 +49,6 @@ public class StudentModel {
     @Column(name = "phone")
     private String phone;
 
-    //
-
     @Column(name = "status")
     private String status;
 
@@ -84,7 +74,8 @@ public class StudentModel {
     @Column(name = "nationality")
     private String nationality;
 
-
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "previousSchool")
     private String previousSchool;
@@ -104,7 +95,9 @@ public class StudentModel {
     @Column(name = "dpPath")
     private String dpPath;
 
+    @Transient
     @ManyToOne
     private ClassSection classSection;
+
 
 }

@@ -117,6 +117,7 @@ public class StudentController {
     public ResponseEntity<?> getStudentId(@RequestParam("studentId") String studentId)
     {
         StudentModel obj = studentService.studentRepo.findByuserId(studentId);
+//        StudentDTO
         if (obj != null){
             return  ResponseEntity.ok(obj);
         }
