@@ -68,14 +68,11 @@ public class TeacherController {
             System.out.println("jai shree ram");
             ObjectMapper jsonobj = new ObjectMapper();
 
-            fileMap.remove("profilePic");
             TeacherDTO data = null;
             try {
                 data = jsonobj.readValue(jsondata, TeacherDTO.class);
             } catch (JsonProcessingException e) {
-
                 System.out.println("Another Exce ption" + e);
-
                 throw new BadRequestException("Invalid Json Format");
             }
 

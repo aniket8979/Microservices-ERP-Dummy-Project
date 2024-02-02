@@ -37,6 +37,7 @@ public class StudentController {
 
 
 
+
     @GetMapping("/getall")
     public ResponseEntity<?> GetStudent(
             @RequestHeader("franchiseId") String franchiseId,
@@ -48,9 +49,9 @@ public class StudentController {
     }
 
 
-    @GetMapping("/get/{userId}")
+    @GetMapping("/get")
     public ResponseEntity<?> getOneStudent(
-            @PathVariable("userId") String studentId,
+            @RequestParam("userId") String studentId,
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType)
     {
@@ -67,9 +68,9 @@ public class StudentController {
 
 
 
-    @GetMapping("/delete/{userId}")
+    @GetMapping("/delete")
     public ResponseEntity<?> deleteStudentById(
-            @PathVariable("userId") String studentId,
+            @RequestParam("userId") String studentId,
             @RequestHeader("franchiseId") String franchiseId,
             @RequestHeader("roleType") String roleType)
     {

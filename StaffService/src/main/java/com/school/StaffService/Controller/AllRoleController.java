@@ -1,6 +1,7 @@
 package com.school.StaffService.Controller;
 
 
+import com.school.StaffService.Exception.BadRequestException;
 import com.school.StaffService.Exception.ResponseClass;
 import com.school.StaffService.Model.AllRole;
 import com.school.StaffService.Repo.AllRoleRepo;
@@ -97,6 +98,28 @@ public class AllRoleController {
     }
 
 
+    @GetMapping("/get")
+    public ResponseEntity<?> getRoleById(
+            @RequestParam(value = "roleId", required = false) String roleId,
+            @RequestHeader("franchiseId") String franchiseId,
+            @RequestHeader("roleType") String roleType
+    )
+    {
+        if(roleType.equals("ADMIN")){
+            AllRole nn = allRoleRepo.findByroleId(roleId);
+            if(nn == null){
+                return ResponseClass.responseFailure("user not found");
+            }
+            if(franchiseId.equals(nn.getFranchiseId())){
+                return ResponseEntity.ok(nn);
+            }
+            throw new BadRequestException("invalid Id");
+        }
+        return ResponseClass.responseFailure("access denied");
+    }
+
+
+
     @PostMapping("/deleterole")
     public ResponseEntity<?> deleteRole(
             @RequestParam("roleId") String uniqueId,
@@ -112,5 +135,7 @@ public class AllRoleController {
         }
         return ResponseClass.responseFailure("access denied");
     }
+
+
 
 }

@@ -43,6 +43,7 @@ public class StudentService {
         try {
             studentData = jsonobj.readValue(studentDataString, StudentDTO.class);
         } catch (JsonProcessingException e) {
+            System.out.println(e);
             throw new BadRequestException("invalid json formatting");
         }
 
@@ -68,7 +69,7 @@ public class StudentService {
         // Saving data related to Students Class and Section Information.
         String section = studentData.getClassData().getSectionId();
 
-        ClassSection classGradeData = classSectionRepo.findBysectionId(section);
+        ClassSection classSectionData = classSectionRepo.findBysectionId(section);
 
 
         // Setting Students Role related information.
@@ -99,7 +100,7 @@ public class StudentService {
         }
 
         student.setFranchiseId(franchiseId);
-        student.setClassSection(classGradeData);
+        student.setClassSection(classSectionData);
 
         studentRepo.save(student);
 
