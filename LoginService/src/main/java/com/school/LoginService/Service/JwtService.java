@@ -1,8 +1,7 @@
 package com.school.LoginService.Service;
 
 
-import com.school.LoginService.Model.SuperAdminModel;
-import com.school.LoginService.Repo.SuperAdminRepo;
+import com.school.LoginService.Repo.AdminRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,7 +21,7 @@ public class JwtService {
 
 
     @Autowired
-    private SuperAdminRepo superAdminRepo;
+    private AdminRepo superAdminRepo;
 
 
     private static final String secret = "0ru239ry28fh2bf82f382382098302jf9nc20290fueoijvoe409nw439h384gun39ng398h39jg394j3mc3j9fj3";

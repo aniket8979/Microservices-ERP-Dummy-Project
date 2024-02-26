@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "super_admin")
@@ -13,29 +14,32 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class SuperAdminModel {
+public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int adminId;
+
+    private String serviceId;
 
     @Column(unique = true)
-    private String email;
+    private String adminEmail;
 
     private String adminName;
 
-    private String adminRole;
+    private String adminPhone;
 
-    private String uniqueId;
+    private String adminAddress;
 
-    private String franchiseId;
+    private String adminGender;
 
-    private String schoolName;
+    private String adminBlood;
 
-    private String schoolAddress;
+    private String adminPassword;
 
-    private String logoImage;
+    private String adminPhoto;
 
-    private String adminFeild;
+    private String adminRole = "ADMIN";
+
 
 }

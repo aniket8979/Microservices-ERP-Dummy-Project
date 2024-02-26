@@ -35,6 +35,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest franchiseId = null;
 
             if (validator.isSecured.test(exchange.getRequest())) {
+
+
                 //header contains token or not
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 //                    throw new RuntimeException("missing authorization header");
@@ -87,6 +89,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     private void getFromTokenSetInHeaders(ServerWebExchange exchange, String token){
         Claims claim = jwtUtil.extractAllClaims(token);
+
+        String url = String.valueOf(exchange.getRequest().getURI().getAuthority());
+
         exchange.getRequest()
                 .mutate()
                 .header("uniqueId", String.valueOf(claim.get("uniqueId")))

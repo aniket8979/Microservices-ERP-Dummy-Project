@@ -86,7 +86,7 @@ public class FeeService {
             }
 
             fee.setClassSection(student.getClassSection().getSectionName());
-
+q
             //  Newly added information
 
 

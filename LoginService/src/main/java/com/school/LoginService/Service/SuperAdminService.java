@@ -1,8 +1,8 @@
 package com.school.LoginService.Service;
 
 
-import com.school.LoginService.Model.SuperAdminModel;
-import com.school.LoginService.Repo.SuperAdminRepo;
+import com.school.LoginService.Model.Admin;
+import com.school.LoginService.Repo.AdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 public class SuperAdminService {
 
     @Autowired
-    public SuperAdminRepo superAdminRepo;
+    public AdminRepo superAdminRepo;
 
 
-    public Object createAdmin(String secret, SuperAdminModel superAdminInfo) {
+    public Object createAdmin(String secret, Admin superAdminInfo) {
         String secretKey = "scriza987654321987654321";
         if (secretKey.equals(secret)) {
             System.out.println(superAdminInfo.getAdminName());
-            if(!uniqueIdExists(superAdminInfo.getUniqueId())){
+            if(!serviceIdExists(superAdminInfo.getServiceId())){
                 superAdminRepo.save(superAdminInfo);
                 return "Admin Profile Created";
             }
@@ -27,7 +27,7 @@ public class SuperAdminService {
     }
 
 
-    public boolean uniqueIdExists(String uniqueId) {
+    public boolean serviceIdExists(String uniqueId) {
         return superAdminRepo.existsByuniqueId(uniqueId);
     }
 }

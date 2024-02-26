@@ -4,10 +4,10 @@ import com.school.LoginService.FeignService.StaffServiceFeign;
 import com.school.LoginService.FeignService.StudentServiceFeign;
 import com.school.LoginService.Model.LoginModel;
 import com.school.LoginService.Model.Otp;
-import com.school.LoginService.Model.SuperAdminModel;
+import com.school.LoginService.Model.Admin;
 import com.school.LoginService.Repo.LoginRepo;
 import com.school.LoginService.Repo.OtpRepo;
-import com.school.LoginService.Repo.SuperAdminRepo;
+import com.school.LoginService.Repo.AdminRepo;
 import com.school.LoginService.Transient.StudentModel;
 import com.school.LoginService.Transient.TeacherModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class LoginService {
     public JwtService jwtService;
 
     @Autowired
-    public SuperAdminRepo superAdminRepo;
+    public AdminRepo superAdminRepo;
 
     @Autowired
     public StaffServiceFeign staffServiceFeign;
@@ -181,9 +181,9 @@ public class LoginService {
 
         }
 
-        SuperAdminModel admin = superAdminRepo.getReferenceByemail(email);
+        Admin admin = superAdminRepo.getReferenceByemail(email);
         if(admin != null){
-            System.out.println("From Login Service, Admin :"+admin.getEmail());
+            System.out.println("From Login Service, Admin :"+admin.getAdminEmail());
             String roleType = admin.getAdminRole();
             token = utilitiesService.getOtpSetUser(email, admin.getFranchiseId(), subject, body, otp, roleType, admin.getUniqueId());
             if(!token.equals("notSent")){

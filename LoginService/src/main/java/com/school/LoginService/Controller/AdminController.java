@@ -2,7 +2,8 @@ package com.school.LoginService.Controller;
 
 
 import com.school.LoginService.Model.Admin;
-import com.school.LoginService.Service.SuperAdminService;
+import com.school.LoginService.Service.AdminService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
-public class SuperAdminController {
+public class AdminController {
 
 
     @Autowired
-    private SuperAdminService superAdminService;
+    private AdminService superAdminService;
 
-    @GetMapping("/{thename}")
+    @PostMapping("/{thename}")
     public ResponseEntity<String> micCheck(@PathVariable("thename")String thatName){
         return ResponseEntity.ok(thatName);
     }

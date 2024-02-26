@@ -4,19 +4,14 @@ package com.school.LoginService.Controller;
 import com.school.LoginService.DTO.SetPasswordDTO;
 import com.school.LoginService.FeignService.StaffServiceFeign;
 import com.school.LoginService.Model.LoginModel;
-import com.school.LoginService.Repo.SuperAdminRepo;
+import com.school.LoginService.Repo.AdminRepo;
 import com.school.LoginService.Service.JwtService;
 import com.school.LoginService.Service.LoginService;
-import com.school.LoginService.Transient.TeacherModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.nodes.Tag;
 
 import java.util.HashMap;
-import java.util.Hashtable;
-
-import static java.lang.StringTemplate.STR;
 
 @RestController
 @RequestMapping("/login")
@@ -29,7 +24,7 @@ public class LoginController {
     private LoginService loginService;
 
     @Autowired
-    private SuperAdminRepo superAdminRepo;
+    private AdminRepo superAdminRepo;
 
     @Autowired
     private JwtService jwtService;
