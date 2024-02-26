@@ -12,23 +12,23 @@ public class School {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long schoolId;
-
+    private long Id;
 
     private String schoolName;
+
     private String schoolEmail;
+
     private String schoolAddress;
+
     private String schoolPhone;
+
     private String description;
+
     private boolean status;
+
     private String schoolPhoto;
 
-    //@Column(unique = true)
-    private String serviceId; // franchise Id
-
-    private String connectionId; // unique Id
-    //private String prefix;
-    //private String schoolId;
+    private String schoolId;
 
     @ManyToOne
     @JoinColumn(name = "planId")
@@ -36,11 +36,6 @@ public class School {
 
     @OneToMany(mappedBy = "school")
     private List<Features> features;
-
-
-
-
-
 
 
 }

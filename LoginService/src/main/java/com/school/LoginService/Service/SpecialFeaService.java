@@ -45,13 +45,13 @@ public class SpecialFeaService
         return ResponseClass.responseSuccess("all services","services",service);
     }
 
-    public ResponseEntity<?> getById(int serviceId) {
-        Features features = specialFeaRepo.findByFeatureId(serviceId);
+    public ResponseEntity<?> getById(int featureId) {
+        Features features = specialFeaRepo.findByFeatureId(featureId);
         if(features == null)
         {
             return ResponseClass.responseFailure("wrong special id");
         }
-        return ResponseClass.responseSuccess("get special feature","features",serviceId);
+        return ResponseClass.responseSuccess("get special feature","features",featureId);
 
     }
 
@@ -67,8 +67,8 @@ public class SpecialFeaService
         return ResponseClass.responseSuccess("service updated successfully");
     }
 
-    public ResponseEntity<?> deleteById(int serviceId) {
-        Features plans1 = specialFeaRepo.findByFeatureId(serviceId);
+    public ResponseEntity<?> deleteById(int featureId) {
+        Features plans1 = specialFeaRepo.findByFeatureId(featureId);
 
         if(plans1 == null)
         {

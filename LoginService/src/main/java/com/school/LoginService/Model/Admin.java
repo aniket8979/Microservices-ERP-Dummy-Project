@@ -6,10 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 
 @Entity
-@Table(name = "super_admin")
+@Table(name = "admin")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -18,9 +17,9 @@ public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int adminId;
+    private int Id;
 
-    private String serviceId;
+    private String schoolId;
 
     @Column(unique = true)
     private String adminEmail;
@@ -33,13 +32,9 @@ public class Admin {
 
     private String adminGender;
 
-    private String adminBlood;
-
-    private String adminPassword;
 
     private String adminPhoto;
 
     private String adminRole = "ADMIN";
-
 
 }

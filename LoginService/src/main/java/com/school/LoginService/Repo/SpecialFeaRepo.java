@@ -12,7 +12,7 @@ public interface SpecialFeaRepo extends JpaRepository<Features,Integer> {
 
     List<Features>  findByPlans_PlanId(int planId);
 
-    List<Features> findFeaturesBySchool_ServiceId(String schoolId);
+    List<Features> findFeaturesBySchool_SchoolId(String schoolId);
 
 //    List<Features> findFeaturesBy
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlansRepo extends JpaRepository<Plans,Integer> {
     Plans findPlansByPlanId(int id);
-    Plans findBySchool_ServiceId(String serviceId);
+    Plans findBySchool_SchoolId(String schoolId);
 
     Plans findPlansByPlanName(String planName);
 

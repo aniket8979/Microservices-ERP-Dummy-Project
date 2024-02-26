@@ -70,9 +70,9 @@ public class LoginService {
         if (loginInfo != null) {
             String userPassword = loginInfo.getPassword();
             if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
-                System.out.println(loginInfo.getFranchiseId()+" this is franhciseId of user");
+                System.out.println(loginInfo.getSchoolId()+" this is schoolId of user");
                 System.out.println(loginInfo.getRole()+" this is role of user");
-                String token =  generateToken(loginInfo.getFranchiseId(), loginInfo.getEmail(), loginInfo.getRole(), loginInfo.getUniqueId());
+                String token =  generateToken(loginInfo.getSchoolId(), loginInfo.getEmail(), loginInfo.getRole(), loginInfo.getUserId());
                 response.put("token", token);
                 response.put("status","success");
                 response.put("msg", "user logged in");
@@ -141,7 +141,7 @@ public class LoginService {
 
         LoginModel loginUser = loginRepo.getReferenceByemail(email);
         if(loginUser != null){
-            token = utilitiesService.getOtpSetUser(email, loginUser.getFranchiseId(), subject, body, otp, loginUser.getRole(), loginUser.getUniqueId());
+            token = utilitiesService.getOtpSetUser(email, loginUser.getSchoolId(), subject, body, otp, loginUser.getRole(), loginUser.getUserId());
             if(!token.equals("notSent")){
                 System.out.println("From login table");
                 response.put("token", token);
@@ -156,7 +156,7 @@ public class LoginService {
         if(student != null){
             System.out.println("from Login Service, student: "+ student.getEmail());
             String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, student.getFranchiseId(), subject, body, otp, roleType, student.getUserId() );
+            token = utilitiesService.getOtpSetUser(email, student.getSchoolId(), subject, body, otp, roleType, student.getUserId());
 
             if(!token.equals("notSent")){
                 response.put("token", token);
@@ -171,7 +171,7 @@ public class LoginService {
         if(teacher != null){
             System.out.println("From Login Service, teacher:"+teacher.getEmail());
             String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, teacher.getFranchiseId(), subject, body, otp, roleType, teacher.getUserId());
+            token = utilitiesService.getOtpSetUser(email, teacher.getSchoolId(), subject, body, otp, roleType, teacher.getUserId());
             if(!token.equals("notSent")){
                 response.put("token", token);
                 response.put("status","success");
@@ -181,11 +181,12 @@ public class LoginService {
 
         }
 
-        Admin admin = superAdminRepo.getReferenceByemail(email);
+        Admin admin = superAdminRepo.getReferenceByAdminEmail(email);
         if(admin != null){
             System.out.println("From Login Service, Admin :"+admin.getAdminEmail());
             String roleType = admin.getAdminRole();
-            token = utilitiesService.getOtpSetUser(email, admin.getFranchiseId(), subject, body, otp, roleType, admin.getUniqueId());
+            String adminId = String.valueOf(admin.getId());
+            token = utilitiesService.getOtpSetUser(email, admin.getSchoolId(), subject, body, otp, roleType, adminId);
             if(!token.equals("notSent")){
                 response.put("token", token);
                 response.put("status","success");
@@ -197,7 +198,6 @@ public class LoginService {
         response.put("token","None");
         response.put("status","failed");
         response.put("msg", "User Not Found");
-
 
         return response;
     }

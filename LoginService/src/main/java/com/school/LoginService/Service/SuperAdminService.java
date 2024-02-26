@@ -17,7 +17,7 @@ public class SuperAdminService {
         String secretKey = "scriza987654321987654321";
         if (secretKey.equals(secret)) {
             System.out.println(superAdminInfo.getAdminName());
-            if(!serviceIdExists(superAdminInfo.getServiceId())){
+            if(!schoolIdExists(superAdminInfo.getSchoolId())){
                 superAdminRepo.save(superAdminInfo);
                 return "Admin Profile Created";
             }
@@ -27,7 +27,7 @@ public class SuperAdminService {
     }
 
 
-    public boolean serviceIdExists(String uniqueId) {
-        return superAdminRepo.existsByuniqueId(uniqueId);
+    public boolean schoolIdExists(String uniqueId) {
+        return superAdminRepo.existsBySchoolId(uniqueId);
     }
 }

@@ -3,6 +3,8 @@ package com.school.LoginService.Repo;
 import com.school.LoginService.Model.Otp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface OtpRepo extends JpaRepository<Otp, Integer> {
 
     Otp getReferenceByemail(String email);
@@ -11,4 +13,5 @@ public interface OtpRepo extends JpaRepository<Otp, Integer> {
 
     void deleteAllByemail(String email);
 
+    List<Otp> findAllByEmail(String email);
 }

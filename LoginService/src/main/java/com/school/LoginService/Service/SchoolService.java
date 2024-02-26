@@ -44,7 +44,7 @@ public class SchoolService
     }
 
     public ResponseEntity<?> getById(String schoolId) {
-        School school = schoolRepo.findByServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         if(school == null)
         {
             return  ResponseClass.responseFailure("wrong school id");
@@ -53,7 +53,7 @@ public class SchoolService
     }
 
     public ResponseEntity<?> deleteById(String schoolId) {
-        School school = schoolRepo.findByServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         if(school == null)
         {
             return  ResponseClass.responseFailure("wrong school id");
@@ -63,9 +63,9 @@ public class SchoolService
     }
 
 
-    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String serviceId, MultipartFile schoolImage, String adminName, String gender, String bloodGrp, String adminAddress, String adminEmail, String adminPhone, String adminPassword, MultipartFile adminImage) {
+    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, String adminName, String gender, String bloodGrp, String adminAddress, String adminEmail, String adminPhone, String adminPassword, MultipartFile adminImage) {
 
-        School school = schoolRepo.findByServiceId(serviceId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         School school1 = new School();
         Admin admin = new Admin();
         if(school != null)
@@ -78,7 +78,7 @@ public class SchoolService
         school1.setSchoolAddress(schoolAddress);
         school1.setSchoolPhone(schoolPhone);
         school1.setDescription(schoolDis);
-        school1.setServiceId(serviceId);
+        school1.setSchoolId(schoolId);
         if (!schoolImage.isEmpty()) {
             try {
                 byte[] bytes = schoolImage.getBytes();
@@ -99,8 +99,6 @@ public class SchoolService
         admin.setAdminGender(gender);
         admin.setAdminPhone(adminPhone);
         admin.setAdminAddress(adminAddress);
-        admin.setAdminPassword(adminPassword);
-        admin.setAdminBlood(bloodGrp);
         if (!adminImage.isEmpty()) {
             try {
                 byte[] bytes = adminImage.getBytes();
@@ -121,7 +119,7 @@ public class SchoolService
     }
 
     public ResponseEntity<?> editById(String id,String schoolName, String schoolAddress, String schoolPhone, Plans plansId, boolean status) {
-        School school = schoolRepo.findByServiceId(id);
+        School school = schoolRepo.findBySchoolId(id);
         if(school != null)
         {
             return ResponseClass.responseFailure("wrong school Id");
@@ -138,7 +136,7 @@ public class SchoolService
 
     public ResponseEntity<?> addSpeFeaSchool(String schoolId, List<Integer> specialFeaId) {
 
-        School school = schoolRepo.findByServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         if(school == null)
         {
             return  ResponseClass.responseFailure("wrong school Id");
@@ -162,8 +160,8 @@ public class SchoolService
 
     public ResponseEntity<?> getSpeFeaSchool(String schoolId) {
 
-        School school = schoolRepo.findByServiceId(schoolId);
-        List<Features> features = specialFeaRepo.findFeaturesBySchool_ServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
+        List<Features> features = specialFeaRepo.findFeaturesBySchool_SchoolId(schoolId);
 
         if(school == null)
         {
@@ -176,7 +174,7 @@ public class SchoolService
 
     public ResponseEntity<?> addPlanInSchool(String schoolId, int planId) {
 
-        School school = schoolRepo.findByServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         if(school == null)
         {
             return  ResponseClass.responseFailure("wrong school Id");
@@ -198,13 +196,13 @@ public class SchoolService
 
     public ResponseEntity<?> getPerSchool(String schoolId) {
 
-        School school = schoolRepo.findByServiceId(schoolId);
+        School school = schoolRepo.findBySchoolId(schoolId);
         if(school == null)
         {
             return ResponseClass.responseFailure("wrong school Id");
         }
 
-        Plans plans = plansRepo.findBySchool_ServiceId(schoolId);
+        Plans plans = plansRepo.findBySchool_SchoolId(schoolId);
         return  ResponseClass.responseSuccess("plans in a school",plans.getPlanName(),plans);
 
     }

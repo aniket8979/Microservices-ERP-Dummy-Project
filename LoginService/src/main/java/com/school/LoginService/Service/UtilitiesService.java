@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -75,11 +76,11 @@ public class UtilitiesService {
 
     public String getOtpSetUser(String email, String franchiseId , String subject, String body, int otp, String roleType, String uniqueId){
 
-        Otp otpSent = new Otp();
 
         try{
-            Otp old = otpRepo.getReferenceByemail(email);
-            otpRepo.delete(old);
+            List<Otp> old = otpRepo.findAllByEmail(email);
+            System.out.println("test this because it can casue an error");
+            otpRepo.deleteAll(old);
             System.out.println("old OTP deleted");
         }catch (Exception e){
             System.out.println("not found in OTP Table");
@@ -87,6 +88,8 @@ public class UtilitiesService {
 
         LocalDateTime issued = LocalDateTime.now();
         LocalDateTime expiry = issued.plusSeconds(600);
+
+        Otp otpSent = new Otp();
 
         otpSent.setOtp(otp);
         otpSent.setEmail(email);
@@ -101,10 +104,10 @@ public class UtilitiesService {
             if(user == null){
                 LoginModel newuser = new LoginModel();
                 System.out.println(franchiseId);
-                newuser.setFranchiseId(franchiseId);
+                newuser.setSchoolId(franchiseId);
                 newuser.setRole(roleType);
                 newuser.setEmail(email);
-                newuser.setUniqueId(uniqueId);
+                newuser.setUserId(uniqueId);
                 loginRepo.save(newuser);
                 return jwtService.generateToken(email, "random String", roleType, "None" );
             }

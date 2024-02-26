@@ -40,9 +40,9 @@ public class SpecialFeaController {
 
 
     @GetMapping("/getByFeaId")
-    public ResponseEntity<?> getById(@RequestParam int serviceId)
+    public ResponseEntity<?> getById(@RequestParam int featureId)
     {
-        return specialFeaService.getById(serviceId);
+        return specialFeaService.getById(featureId);
 
     }
 
@@ -55,9 +55,9 @@ public class SpecialFeaController {
 
 
     @DeleteMapping("/deleteById")
-    public ResponseEntity<?> deleteById(@RequestParam int serviceId )
+    public ResponseEntity<?> deleteById(@RequestParam int featureId )
     {
-        return specialFeaService.deleteById(serviceId);
+        return specialFeaService.deleteById(featureId);
 
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SchoolRepo  extends JpaRepository<School,Long> {
 
-    School findByServiceId(String id);
+    School findBySchoolId(String id);
 
     School findBySchoolName(String name);
 

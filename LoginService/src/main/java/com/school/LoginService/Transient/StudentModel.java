@@ -1,17 +1,10 @@
 package com.school.LoginService.Transient;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
-
 
 
 @AllArgsConstructor
@@ -27,7 +20,7 @@ public class StudentModel extends User {
 
         private String userId;
 
-        private String franchiseId;
+        private String schoolId;
 
         private String name;
 
