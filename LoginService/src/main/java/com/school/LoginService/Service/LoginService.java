@@ -186,6 +186,7 @@ public class LoginService {
             System.out.println("From Login Service, Admin :"+admin.getAdminEmail());
             String roleType = admin.getAdminRole();
             String adminId = String.valueOf(admin.getId());
+            System.out.println("this is adminId "+ adminId);
             token = utilitiesService.getOtpSetUser(email, admin.getSchoolId(), subject, body, otp, roleType, adminId);
             if(!token.equals("notSent")){
                 response.put("token", token);

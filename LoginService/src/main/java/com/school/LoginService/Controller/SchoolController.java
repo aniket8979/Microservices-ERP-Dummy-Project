@@ -17,9 +17,23 @@ public class SchoolController {
     private SchoolService schoolService;
 
     @PostMapping("/addSchool")
-    public ResponseEntity<?> addSchool(@RequestParam String schoolName, @RequestParam String schoolAddress,@RequestParam String schoolEmail, @RequestParam String schoolPhone, @RequestParam String schoolDis,@RequestParam String serviceId, @RequestParam(value = "schoolImage", required = false) MultipartFile schoolImage,@RequestParam String adminName,@RequestParam String gender,@RequestParam String bloodGrp,@RequestParam String adminAddress,@RequestParam String adminEmail,@RequestParam String adminPhone, @RequestParam String adminPassword,@RequestParam(value = "adminImage", required = false) MultipartFile adminImage)
+    public ResponseEntity<?> addSchool(
+            @RequestParam String schoolName,
+            @RequestParam String schoolAddress,
+            @RequestParam String schoolEmail,
+            @RequestParam String schoolPhone,
+            @RequestParam String schoolDis,
+            @RequestParam String schoolId,
+            @RequestParam(value = "schoolImage", required = false) MultipartFile schoolImage,
+            @RequestParam String adminName,
+            @RequestParam String gender,
+            @RequestParam String adminAddress,
+            @RequestParam String adminEmail,
+            @RequestParam String adminPhone,
+            @RequestParam(value = "adminImage", required = false) MultipartFile adminImage
+    )
     {
-        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,serviceId,schoolImage,adminName,gender,bloodGrp,adminAddress,adminEmail,adminPhone,adminPassword,adminImage);
+        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,schoolId,schoolImage,adminName,gender,adminAddress,adminEmail, adminPhone,adminImage);
 
     }
     @GetMapping("/getAllSchool")

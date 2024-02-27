@@ -37,6 +37,9 @@ public class SchoolService
     @Autowired
     private PlansRepo plansRepo;
 
+    @Autowired
+    private UtilitiesService utilitiesService;
+
     public ResponseEntity<?> getAllSchool() {
 
         List<School> schools = schoolRepo.findAll();
@@ -63,14 +66,18 @@ public class SchoolService
     }
 
 
-    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, String adminName, String gender, String bloodGrp, String adminAddress, String adminEmail, String adminPhone, String adminPassword, MultipartFile adminImage) {
+    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
 
         School school = schoolRepo.findBySchoolId(schoolId);
         School school1 = new School();
         Admin admin = new Admin();
         if(school != null)
         {
-            return  ResponseClass.responseFailure("this prefix already exits");
+            return  ResponseClass.responseFailure("this schoolId already exits");
+        }
+        boolean found = adminRepo.existsByAdminEmail(adminEmail);
+        if(found){
+            return ResponseClass.responseFailure("this admin already exists");
         }
 
         school1.setSchoolName(schoolName);
@@ -82,7 +89,7 @@ public class SchoolService
         if (!schoolImage.isEmpty()) {
             try {
                 byte[] bytes = schoolImage.getBytes();
-                String imagePath = "/Users/girjeshbaghel/Documents/Project/SchoolERP-main" + schoolName + "_school_image.jpg"; // Change this path to your desired directory
+                String imagePath = utilitiesService.filePath + schoolName + "_school_image.jpg"; // Change this path to your desired directory
                 FileOutputStream fos = new FileOutputStream(new File(imagePath));
                 fos.write(bytes);
                 fos.close();
@@ -98,11 +105,12 @@ public class SchoolService
         admin.setAdminEmail(adminEmail);
         admin.setAdminGender(gender);
         admin.setAdminPhone(adminPhone);
+        admin.setSchoolId(schoolId);
         admin.setAdminAddress(adminAddress);
         if (!adminImage.isEmpty()) {
             try {
                 byte[] bytes = adminImage.getBytes();
-                String imagePath1 = "/Users/girjeshbaghel/Documents/Project/SchoolERP-main" + schoolName + "_school_image.jpg"; // Change this path to your desired directory
+                String imagePath1 = utilitiesService.filePath + schoolName + "_school_image.jpg"; // Change this path to your desired directory
                 FileOutputStream fos = new FileOutputStream(new File(imagePath1));
                 fos.write(bytes);
                 fos.close();

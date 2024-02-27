@@ -9,4 +9,6 @@ public interface AdminRepo extends JpaRepository<Admin, Integer> {
     Admin getReferenceByAdminEmail(String email);
 
     boolean existsBySchoolId(String schoolId);
+
+    boolean existsByAdminEmail(String adminEmail);
 }

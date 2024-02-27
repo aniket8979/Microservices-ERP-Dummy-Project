@@ -34,7 +34,7 @@ public class School {
     @JoinColumn(name = "planId")
     private Plans plans;
 
-    @OneToMany(mappedBy = "school")
+    @OneToMany
     private List<Features> features;
 
 

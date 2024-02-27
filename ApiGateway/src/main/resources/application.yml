@@ -36,7 +36,7 @@ spring:
         - id: login-service
           uri: lb://login-service
           predicates:
-            - Path=/login/**, /admin/**
+            - Path=/login/**, /admin/**, /sch/**
           filters:
             - AuthenticationFilter
 

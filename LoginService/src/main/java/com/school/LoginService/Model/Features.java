@@ -21,7 +21,6 @@ public class Features {
     private List<FeaPermission> feaPermission;
 
     @ManyToOne
-    @JoinColumn(name = "schoolId", referencedColumnName = "schoolId")
     private School school;
 
     @ManyToOne

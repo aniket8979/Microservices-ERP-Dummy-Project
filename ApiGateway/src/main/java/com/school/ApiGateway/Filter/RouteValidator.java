@@ -14,7 +14,8 @@ public class RouteValidator {
             "/login/all",
             "admin/superadmin/register",
             "/eureka/**",
-            "/admin/**"
+            "/admin/**",
+            "/sch/addSchool"
     );
 
     public Predicate<ServerHttpRequest> isSecured =

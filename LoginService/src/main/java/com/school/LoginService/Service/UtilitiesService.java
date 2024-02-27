@@ -74,7 +74,7 @@ public class UtilitiesService {
 
 
 
-    public String getOtpSetUser(String email, String franchiseId , String subject, String body, int otp, String roleType, String uniqueId){
+    public String getOtpSetUser(String email, String schoolId , String subject, String body, int otp, String roleType, String uniqueId){
 
 
         try{
@@ -103,10 +103,11 @@ public class UtilitiesService {
             LoginModel user = loginRepo.getReferenceByemail(email);
             if(user == null){
                 LoginModel newuser = new LoginModel();
-                System.out.println(franchiseId);
-                newuser.setSchoolId(franchiseId);
+                System.out.println("is schoolId coming null"+schoolId);
+                newuser.setSchoolId(schoolId);
                 newuser.setRole(roleType);
                 newuser.setEmail(email);
+                System.out.println("checking if it is null "+uniqueId);
                 newuser.setUserId(uniqueId);
                 loginRepo.save(newuser);
                 return jwtService.generateToken(email, "random String", roleType, "None" );
@@ -117,6 +118,10 @@ public class UtilitiesService {
         return "notSent";
 
     }
+
+
+
+    public String filePath = "/Users/Aniket/Scriza/Projects/Project/school/files/";
 
 
 
