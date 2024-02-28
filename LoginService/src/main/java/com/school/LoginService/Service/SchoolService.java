@@ -75,7 +75,7 @@ public class SchoolService
         Admin admin = new Admin();
         if(school != null)
         {
-            return  ResponseClass.responseFailure("this prefix already exits");
+            return  ResponseClass.responseFailure("this schoolId already exits");
         }
         if(school2 != null)
         {
