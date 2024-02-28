@@ -9,7 +9,7 @@ public interface AdminRepo extends JpaRepository<Admin, Long> {
 
     Admin findByAdminEmail(String email);
 
-    Admin findByAdminId(Long franchiseId);
+    
 
  //   boolean existsByuniqueId(String uniqueId);
 }
