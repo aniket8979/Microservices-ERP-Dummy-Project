@@ -27,14 +27,12 @@ public class SchoolController {
                                        @RequestParam(required = false) int planId,
                                        @RequestParam String adminName,
                                        @RequestParam String gender,
-                                       @RequestParam String bloodGrp,
                                        @RequestParam String adminAddress,
                                        @RequestParam String adminEmail,
                                        @RequestParam String adminPhone,
-                                       @RequestParam String adminPassword,
                                        @RequestParam(value = "adminImage", required = false) MultipartFile adminImage)
     {
-        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,schoolId,schoolImage,planId,adminName,gender,bloodGrp,adminAddress,adminEmail,adminPhone,adminPassword,adminImage);
+        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,schoolId,schoolImage,planId,adminName,gender,adminAddress,adminEmail,adminPhone,adminImage);
 
     }
     @GetMapping("/getAllSchool")
