@@ -1,7 +1,6 @@
 package com.school.LoginService.Controller;
 
 
-import com.school.LoginService.Exception.ResponseClass;
 import com.school.LoginService.Model.Admin;
 import com.school.LoginService.Service.AdminService;
 
@@ -25,23 +24,15 @@ public class AdminController {
 
 
     @PostMapping("/superadmin/register")
-    public ResponseEntity<?> registerSuperAdmin(
-            @RequestHeader("SECRET")String secret,
-            @RequestParam String adminId,
-            @RequestParam String adminName,
-            @RequestParam String adminGender,
-            @RequestParam String adminAddress,
-            @RequestParam String adminEmail,
-            @RequestParam String adminPhone,
-            @RequestParam String adminPassword
-    )
-    {
-        boolean admin = superAdminService.createAdmin(secret, adminId, adminName, adminGender, adminAddress, adminEmail, adminPhone, adminPassword);
-        if(admin){
-
-            return ResponseClass.responseSuccess("admin created successfully");
+    public ResponseEntity<String> registerSuperAdmin(@RequestHeader("SECRET")String secret, @RequestBody Admin superAdminInfo){
+        Object admin = superAdminService.createAdmin(secret, superAdminInfo);
+        if(admin != null){
+            if(admin.equals(false)){
+                return ResponseEntity.ok("UniqueId Already Exists");
+            }
+            return ResponseEntity.ok(admin.toString());
         }
-        return ResponseClass.responseFailure("admin creation failed");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid SecretKey");
     }
 
 //    @PostMapping(value = "/record-status/{recordId}")

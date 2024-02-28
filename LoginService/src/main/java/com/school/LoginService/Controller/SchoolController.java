@@ -17,29 +17,30 @@ public class SchoolController {
     private SchoolService schoolService;
 
     @PostMapping("/addSchool")
-    public ResponseEntity<?> addSchool(
-            @RequestParam String schoolName,
-            @RequestParam String schoolAddress,
-            @RequestParam String schoolEmail,
-            @RequestParam String schoolPhone,
-            @RequestParam String schoolDis,
-            @RequestParam String schoolId,
-            @RequestParam(value = "schoolImage", required = false) MultipartFile schoolImage,
-            @RequestParam String adminName,
-            @RequestParam String gender,
-            @RequestParam String adminAddress,
-            @RequestParam String adminEmail,
-            @RequestParam String adminPhone,
-            @RequestParam(value = "adminImage", required = false) MultipartFile adminImage
-    )
+    public ResponseEntity<?> addSchool(@RequestParam String schoolName,
+                                       @RequestParam String schoolAddress,
+                                       @RequestParam String schoolEmail,
+                                       @RequestParam String schoolPhone,
+                                       @RequestParam String schoolDis,
+                                       @RequestParam String schoolId,
+                                       @RequestParam(value = "schoolImage", required = false) MultipartFile schoolImage,
+                                       @RequestParam(required = false) int planId,
+                                       @RequestParam String adminName,
+                                       @RequestParam String gender,
+                                       @RequestParam String bloodGrp,
+                                       @RequestParam String adminAddress,
+                                       @RequestParam String adminEmail,
+                                       @RequestParam String adminPhone,
+                                       @RequestParam String adminPassword,
+                                       @RequestParam(value = "adminImage", required = false) MultipartFile adminImage)
     {
-        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,schoolId,schoolImage,adminName,gender,adminAddress,adminEmail, adminPhone,adminImage);
+        return schoolService.saveSchool(schoolName,schoolAddress,schoolEmail,schoolPhone,schoolDis,schoolId,schoolImage,planId,adminName,gender,bloodGrp,adminAddress,adminEmail,adminPhone,adminPassword,adminImage);
 
     }
     @GetMapping("/getAllSchool")
-    public ResponseEntity<?> getAllSchool()
+    public ResponseEntity<?> getAllSchool(@RequestParam(defaultValue = "",required = false) String key)
     {
-        return schoolService.getAllSchool();
+        return schoolService.getAllSchool(key);
 
     }
 
@@ -51,9 +52,14 @@ public class SchoolController {
     }
 
     @PutMapping("/editById/{id}")
-    public ResponseEntity<?> editById(@PathVariable String id,@RequestParam String schoolName,@RequestParam String schoolAddress,@RequestParam String schoolPhone, @RequestParam Plans plansId,@RequestParam boolean status )
+    public ResponseEntity<?> editById(@PathVariable String id,
+                                      @RequestParam(required = false) String schoolName,
+                                      @RequestParam(required = false) String schoolAddress,
+                                      @RequestParam(required = false) String schoolPhone,
+                                      @RequestParam(required = false) int planId,
+                                      @RequestParam(required = false) boolean status )
     {
-        return schoolService.editById(id,schoolName,schoolAddress,schoolPhone,plansId,status);
+        return schoolService.editById(id,schoolName,schoolAddress,schoolPhone,planId,status);
 
     }
 
@@ -66,32 +72,32 @@ public class SchoolController {
 
     }
 
-    @PostMapping("/addFeaBySchId/{schoolId}")
-    public ResponseEntity<?> addSpeFeaSchool(@PathVariable String schoolId, @RequestParam List<Integer> featureId)
-    {
-        return schoolService.addSpeFeaSchool(schoolId,featureId);
+//    @PostMapping("/addFeaBySchId/{schoolId}")
+//    public ResponseEntity<?> addSpeFeaSchool(@PathVariable String schoolId, @RequestParam List<Integer> featureId)
+//    {
+//        return schoolService.addSpeFeaSchool(schoolId,featureId);
+//
+//    }
 
-    }
+//    @PostMapping("/addPlanInSchool/{schoolId}")
+//    public ResponseEntity<?> addPlanSchool(@PathVariable String schoolId, @RequestParam int planId)
+//    {
+//        return schoolService.addPlanInSchool(schoolId,planId);
+//
+//    }
 
-    @PostMapping("/addPlanInSchool/{schoolId}")
-    public ResponseEntity<?> addPlanSchool(@PathVariable String schoolId, @RequestParam int planId)
-    {
-        return schoolService.addPlanInSchool(schoolId,planId);
-
-    }
-
-    @GetMapping("/getPerBySchId/{schoolId}")
-    public ResponseEntity<?> getPerBySchool(@RequestParam String schoolId)
-    {
-        return schoolService.getPerSchool(schoolId);
-
-    }
-    @GetMapping("/getFeaBySchId/{schoolId}")
-    public ResponseEntity<?> getSpeFeaSchool(@RequestParam String schoolId)
-    {
-        return schoolService.getSpeFeaSchool(schoolId);
-
-    }
+//    @GetMapping("/getPerBySchId/{schoolId}")
+//    public ResponseEntity<?> getPerBySchool(@RequestParam String schoolId)
+//    {
+//        return schoolService.getPerSchool(schoolId);
+//
+//    }
+//    @GetMapping("/getFeaBySchId/{schoolId}")
+//    public ResponseEntity<?> getSpeFeaSchool(@RequestParam String schoolId)
+//    {
+//        return schoolService.getSpeFeaSchool(schoolId);
+//
+//    }
 
 
 

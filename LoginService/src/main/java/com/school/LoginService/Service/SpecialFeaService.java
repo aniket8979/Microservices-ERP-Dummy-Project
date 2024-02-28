@@ -27,10 +27,17 @@ public class SpecialFeaService
 
     public ResponseEntity<?> saveService(int planId, Features features) {
         Plans plans = plansRepo.findPlansByPlanId(planId);
+        Features features2 = specialFeaRepo.findFeaturesByFeatureName(features.getFeatureName());
+        if(features2 != null)
+        {
+            return  ResponseClass.responseFailure("this feature already exits");
+        }
+
         if(plans == null)
         {
             return  ResponseClass.responseFailure("wrong planId");
         }
+
         features.setPlans(plans);
         Features features1 = specialFeaRepo.save(features);
         plans.getFeatures().add(features1);
@@ -45,13 +52,13 @@ public class SpecialFeaService
         return ResponseClass.responseSuccess("all services","services",service);
     }
 
-    public ResponseEntity<?> getById(int featureId) {
-        Features features = specialFeaRepo.findByFeatureId(featureId);
+    public ResponseEntity<?> getById(int serviceId) {
+        Features features = specialFeaRepo.findByFeatureId(serviceId);
         if(features == null)
         {
             return ResponseClass.responseFailure("wrong special id");
         }
-        return ResponseClass.responseSuccess("get special feature","features",featureId);
+        return ResponseClass.responseSuccess("get special feature","features",serviceId);
 
     }
 
@@ -67,8 +74,8 @@ public class SpecialFeaService
         return ResponseClass.responseSuccess("service updated successfully");
     }
 
-    public ResponseEntity<?> deleteById(int featureId) {
-        Features plans1 = specialFeaRepo.findByFeatureId(featureId);
+    public ResponseEntity<?> deleteById(int serviceId) {
+        Features plans1 = specialFeaRepo.findByFeatureId(serviceId);
 
         if(plans1 == null)
         {

@@ -28,9 +28,7 @@ public class LoginModel {
     @Column(name = "role")
     private String role;
 
-    @Column(name = "schoolId",nullable = false)
-    private String schoolId;
-
-    private String userId;
+    @Column(name = "serviceId",nullable = false)
+    private String serviceId;
 
 }

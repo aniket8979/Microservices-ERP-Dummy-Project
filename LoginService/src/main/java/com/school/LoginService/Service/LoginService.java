@@ -32,7 +32,7 @@ public class LoginService {
     public JwtService jwtService;
 
     @Autowired
-    public AdminRepo superAdminRepo;
+    public AdminRepo adminRepo;
 
     @Autowired
     public StaffServiceFeign staffServiceFeign;
@@ -54,8 +54,8 @@ public class LoginService {
     }
 
 
-    public String generateToken(String franchiseId, String emailId, String roleType, String uniqueId) {
-        return jwtService.generateToken(franchiseId, emailId, roleType, uniqueId);
+    public String generateToken(String franchiseId, String emailId, String roleType) {
+        return jwtService.generateToken(franchiseId, emailId, roleType);
     }
 
 
@@ -64,29 +64,36 @@ public class LoginService {
     }
 
 
-    public HashMap<String, String> loginGeneratetoken(LoginModel loginDetails){
-        HashMap<String,String> response =  new HashMap<>();
-        LoginModel loginInfo = loginRepo.getReferenceByemail(loginDetails.getEmail());
-        if (loginInfo != null) {
-            String userPassword = loginInfo.getPassword();
-            if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
-                System.out.println(loginInfo.getSchoolId()+" this is schoolId of user");
-                System.out.println(loginInfo.getRole()+" this is role of user");
-                String token =  generateToken(loginInfo.getSchoolId(), loginInfo.getEmail(), loginInfo.getRole(), loginInfo.getUserId());
-                response.put("token", token);
-                response.put("status","success");
-                response.put("msg", "user logged in");
-                return response;
-            }
-
-            response.put("status","failed");
-            response.put("msg", "Invalid Password");
-            return response;
-        }
-        response.put("status", "failed");
-        response.put("msg", "Invalid EmailId");
-        return  response;
-    }
+//    public HashMap<String, String> loginGeneratetoken(LoginModel loginDetails){
+//        HashMap<String,String> response =  new HashMap<String,String>();
+//        LoginModel loginInfo = loginRepo.findByEmail(loginDetails.getEmail());
+//        if (loginInfo != null) {
+//            String userPassword = loginInfo.getPassword();
+//            if(passwordEncoder.matches(loginDetails.getPassword(), userPassword)) {
+//                System.out.println(loginInfo.getServiceId()+" this is franhciseId of user");
+//                System.out.println(loginInfo.getRole()+" this is role of user");
+//                Admin franchiseAdmin = adminRepo.findByAdminId(loginInfo.getServiceId());
+//                if(franchiseAdmin == null){
+//                    System.out.println("franchise admin not found");
+//                    response.put("status", "failed");
+//                    response.put("msg", "user not found");
+//                    return response;
+//                }
+//                String token =  generateToken(loginInfo.getServiceId(), loginInfo.getEmail(), loginInfo.getRole());
+//                response.put("token", token);
+//                response.put("status","success");
+//                response.put("msg", "user logged in");
+//                return response;
+//            }
+//
+//            response.put("status","failed");
+//            response.put("msg", "Invalid Password");
+//            return response;
+//        }
+//        response.put("status", "failed");
+//        response.put("msg", "Invalid EmailId");
+//        return  response;
+//    }
 
 
 
@@ -102,7 +109,7 @@ public class LoginService {
                 if(verify.getExpires().isBefore(now)){
                     return "otp expired";
                 }else{
-                    LoginModel user = loginRepo.getReferenceByemail(email);
+                    LoginModel user = loginRepo.findByEmail(email);
                     if(user != null){
 
                         user.setPassword(passwordEncoder.encode(password));
@@ -122,86 +129,86 @@ public class LoginService {
 
 
 
-    public HashMap<String, String> sendOtpAndIssueToken(String email){
-        Random random = new Random();
-        int otp = random.nextInt(1001, 9999);
-        String body = "This is your OTP : "+ otp;
-        String subject = "OTP For Password Reset";
-
-        String token;
-        HashMap<String,String> response = new HashMap<>();
-
-        // Retreiving If User Information Exists
-        try{
-            otpRepo.deleteAllByemail(email);
-            System.out.println("old OTP deleted");
-        }catch (Exception e){
-            System.out.println("not found in OTP Table");
-        }
-
-        LoginModel loginUser = loginRepo.getReferenceByemail(email);
-        if(loginUser != null){
-            token = utilitiesService.getOtpSetUser(email, loginUser.getSchoolId(), subject, body, otp, loginUser.getRole(), loginUser.getUserId());
-            if(!token.equals("notSent")){
-                System.out.println("From login table");
-                response.put("token", token);
-                response.put("status","success");
-                response.put("msg", "OTP Sent to User");
-                return response;
-            }
-        }
-
-
-        StudentModel student = studentServiceFeign.isStudentFound(email);
-        if(student != null){
-            System.out.println("from Login Service, student: "+ student.getEmail());
-            String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, student.getSchoolId(), subject, body, otp, roleType, student.getUserId());
-
-            if(!token.equals("notSent")){
-                response.put("token", token);
-                response.put("status", "success");
-                response.put("msg", "OTP Sent to User");
-                return response;
-            }
-
-        }
-
-        TeacherModel teacher = staffServiceFeign.isStaffFound(email);
-        if(teacher != null){
-            System.out.println("From Login Service, teacher:"+teacher.getEmail());
-            String roleType = staffServiceFeign.getUserRoleType(email);
-            token = utilitiesService.getOtpSetUser(email, teacher.getSchoolId(), subject, body, otp, roleType, teacher.getUserId());
-            if(!token.equals("notSent")){
-                response.put("token", token);
-                response.put("status","success");
-                response.put("msg", "OTP Sent to User");
-                return response;
-            }
-
-        }
-
-        Admin admin = superAdminRepo.getReferenceByAdminEmail(email);
-        if(admin != null){
-            System.out.println("From Login Service, Admin :"+admin.getAdminEmail());
-            String roleType = admin.getAdminRole();
-            String adminId = String.valueOf(admin.getId());
-            System.out.println("this is adminId "+ adminId);
-            token = utilitiesService.getOtpSetUser(email, admin.getSchoolId(), subject, body, otp, roleType, adminId);
-            if(!token.equals("notSent")){
-                response.put("token", token);
-                response.put("status","success");
-                response.put("msg", "OTP Sent to User");
-                return response;
-            }
-        }
-
-        response.put("token","None");
-        response.put("status","failed");
-        response.put("msg", "User Not Found");
-
-        return response;
-    }
+//    public HashMap<String, String> sendOtpAndIssueToken(String email){
+//        Random random = new Random();
+//        int otp = random.nextInt(1001, 9999);
+//        String body = "This is your OTP : "+ otp;
+//        String subject = "OTP For Password Reset";
+//
+//        String token;
+//        HashMap<String,String> response = new HashMap<>();
+//
+//        // Retreiving If User Information Exists
+//
+//        try{
+//            otpRepo.deleteAllByemail(email);
+//            System.out.println("old OTP deleted");
+//        }catch (Exception e){
+//            System.out.println("not found in OTP Table");
+//        }
+//
+//        LoginModel loginUser = loginRepo.findByEmail(email);
+//        if(loginUser != null){
+//            token = utilitiesService.getOtpSetUser(email, loginUser.getServiceId(), subject, body, otp, loginUser.getRole() );
+//            if(!token.equals("notSent")){
+//                System.out.println("From login table");
+//                response.put("token", token);
+//                response.put("status","success");
+//                response.put("msg", "OTP Sent to User");
+//                return response;
+//            }
+//        }
+//
+//
+//        StudentModel student = studentServiceFeign.isStudentFound(email);
+//        if(student != null){
+//            System.out.println("from Login Service, student: "+ student.getEmail());
+//            String roleType = staffServiceFeign.getUserRoleType(email);
+//            token = utilitiesService.getOtpSetUser(email, student.getFranchiseId(), subject, body, otp, roleType);
+//
+//            if(!token.equals("notSent")){
+//                response.put("token", token);
+//                response.put("status", "success");
+//                response.put("msg", "OTP Sent to User");
+//                return response;
+//            }
+//
+//        }
+//
+//        TeacherModel teacher = staffServiceFeign.isStaffFound(email);
+//        if(teacher != null){
+//            System.out.println("From Login Service, teacher:"+teacher.getEmail());
+//            String roleType = staffServiceFeign.getUserRoleType(email);
+//            token = utilitiesService.getOtpSetUser(email, teacher.getFranchiseId(), subject, body, otp, roleType);
+//            if(!token.equals("notSent")){
+//                response.put("token", token);
+//                response.put("status","success");
+//                response.put("msg", "OTP Sent to User");
+//                return response;
+//            }
+//
+//        }
+//
+//        Admin admin = adminRepo.findByAdminEmail(email);
+//        if(admin != null){
+//            System.out.println("From Login Service, Admin :"+admin.getAdminEmail());
+//            String roleType = admin.getAdminRole();
+//            token = utilitiesService.getOtpSetUser(email, admin.getAdminId(), subject, body, otp, roleType);
+//            if(!token.equals("notSent")){
+//                response.put("token", token);
+//                response.put("status","success");
+//                response.put("msg", "OTP Sent to User");
+//                return response;
+//            }
+//        }
+//
+//        response.put("token","None");
+//        response.put("status","failed");
+//        response.put("msg", "User Not Found");
+//
+//
+//        return response;
+//    }
 
 
 }

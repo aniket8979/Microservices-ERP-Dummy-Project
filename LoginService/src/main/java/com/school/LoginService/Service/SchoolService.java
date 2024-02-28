@@ -1,14 +1,8 @@
 package com.school.LoginService.Service;
 
 import com.school.LoginService.Exception.ResponseClass;
-import com.school.LoginService.Model.Admin;
-import com.school.LoginService.Model.Features;
-import com.school.LoginService.Model.Plans;
-import com.school.LoginService.Model.School;
-import com.school.LoginService.Repo.AdminRepo;
-import com.school.LoginService.Repo.PlansRepo;
-import com.school.LoginService.Repo.SchoolRepo;
-import com.school.LoginService.Repo.SpecialFeaRepo;
+import com.school.LoginService.Model.*;
+import com.school.LoginService.Repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,13 +32,19 @@ public class SchoolService
     private PlansRepo plansRepo;
 
     @Autowired
-    private UtilitiesService utilitiesService;
+    private SubscriptionRepo subscriptionRepo;
 
-    public ResponseEntity<?> getAllSchool() {
-
-        List<School> schools = schoolRepo.findAll();
-        return ResponseClass.responseSuccess("all schools", "school",schools);
+    public ResponseEntity<?> getAllSchool(String key) {
+        List<School> schools;
+        if (key.isBlank()) {
+             schools = schoolRepo.findAllWithPlans();
+            return ResponseClass.responseSuccess("all schools", "school", schools);
+        } else {
+            schools = schoolRepo.findBySchoolNameContainingIgnoreCaseOrSchoolEmailContainingIgnoreCaseOrSchoolAddressContainingIgnoreCase(key, key, key);
+            return ResponseClass.responseSuccess("all schools", "school", schools);
+        }
     }
+
 
     public ResponseEntity<?> getById(String schoolId) {
         School school = schoolRepo.findBySchoolId(schoolId);
@@ -66,18 +66,26 @@ public class SchoolService
     }
 
 
-    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
+    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String serviceId, MultipartFile schoolImage, int planId, String adminName, String gender, String bloodGrp, String adminAddress, String adminEmail, String adminPhone, String adminPassword, MultipartFile adminImage) {
 
-        School school = schoolRepo.findBySchoolId(schoolId);
+        School school = schoolRepo.findBySchoolId(serviceId);
+
+        School school2 = schoolRepo.findBySchoolEmail(schoolEmail);
         School school1 = new School();
         Admin admin = new Admin();
         if(school != null)
         {
-            return  ResponseClass.responseFailure("this schoolId already exits");
+            return  ResponseClass.responseFailure("this prefix already exits");
         }
-        boolean found = adminRepo.existsByAdminEmail(adminEmail);
-        if(found){
-            return ResponseClass.responseFailure("this admin already exists");
+        if(school2 != null)
+        {
+            return  ResponseClass.responseFailure("this email is already exits");
+        }
+
+        Plans plans = plansRepo.findPlansByPlanId(planId);
+        if(plans == null)
+        {
+            return ResponseClass.responseFailure("wrong plan Id");
         }
 
         school1.setSchoolName(schoolName);
@@ -85,11 +93,12 @@ public class SchoolService
         school1.setSchoolAddress(schoolAddress);
         school1.setSchoolPhone(schoolPhone);
         school1.setDescription(schoolDis);
-        school1.setSchoolId(schoolId);
+        school1.setSchoolId(serviceId);
+        school1.setPlans(plans);
         if (!schoolImage.isEmpty()) {
             try {
                 byte[] bytes = schoolImage.getBytes();
-                String imagePath = utilitiesService.filePath + schoolName + "_school_image.jpg"; // Change this path to your desired directory
+                String imagePath = "/Users/girjeshbaghel/Documents/Project/SchoolERP-main" + schoolName + "_school_image.jpg"; // Change this path to your desired directory
                 FileOutputStream fos = new FileOutputStream(new File(imagePath));
                 fos.write(bytes);
                 fos.close();
@@ -105,12 +114,13 @@ public class SchoolService
         admin.setAdminEmail(adminEmail);
         admin.setAdminGender(gender);
         admin.setAdminPhone(adminPhone);
-        admin.setSchoolId(schoolId);
         admin.setAdminAddress(adminAddress);
+        admin.setAdminPassword(adminPassword);
+        admin.setAdminBlood(bloodGrp);
         if (!adminImage.isEmpty()) {
             try {
                 byte[] bytes = adminImage.getBytes();
-                String imagePath1 = utilitiesService.filePath + schoolName + "_school_image.jpg"; // Change this path to your desired directory
+                String imagePath1 = "/Users/girjeshbaghel/Documents/Project/SchoolERP-main" + schoolName + "_school_image.jpg"; // Change this path to your desired directory
                 FileOutputStream fos = new FileOutputStream(new File(imagePath1));
                 fos.write(bytes);
                 fos.close();
@@ -121,21 +131,36 @@ public class SchoolService
             }
         }
 
+        SchoolSubscription schoolSubscription = new SchoolSubscription();
+        schoolSubscription.setSchoolId(serviceId);
+        schoolSubscription.setPlan(planId);
+        schoolSubscription.setPurchaseDate(LocalDateTime.now());
+        schoolSubscription.setEmail(schoolEmail);
+        schoolSubscription.setStatus(true);
+        schoolSubscription.setPhoneNo(schoolPhone);
+        schoolSubscription.setPrice(plans.getPrice());
+        subscriptionRepo.save(schoolSubscription);
+
         adminRepo.save(admin);
         return ResponseClass.responseSuccess("school Added Successfully");
 
     }
 
-    public ResponseEntity<?> editById(String id,String schoolName, String schoolAddress, String schoolPhone, Plans plansId, boolean status) {
+    public ResponseEntity<?> editById(String id, String schoolName, String schoolAddress, String schoolPhone, int plansId, boolean status) {
         School school = schoolRepo.findBySchoolId(id);
         if(school != null)
         {
             return ResponseClass.responseFailure("wrong school Id");
         }
+        Plans plans = plansRepo.findPlansByPlanId(plansId);
+        if(plans == null)
+        {
+            return ResponseClass.responseFailure("wrong plan Id");
+        }
         school.setSchoolName(schoolName);
         school.setSchoolAddress(schoolAddress);
         school.setSchoolPhone(schoolPhone);
-        school.setPlans(plansId);
+        school.setPlans(plans);
         school.setStatus(status);
         schoolRepo.save(school);
         return ResponseClass.responseSuccess("school updated successfully");
@@ -188,16 +213,25 @@ public class SchoolService
             return  ResponseClass.responseFailure("wrong school Id");
         }
 
+
         Plans plans = plansRepo.findPlansByPlanId(planId);
         if(plans == null)
         {
             return  ResponseClass.responseFailure("wrong plan Id");
         }
-
+        SchoolSubscription schoolSubscription = new SchoolSubscription();
+        schoolSubscription.setSchoolId(schoolId);
+        schoolSubscription.setPlan(planId);
+        schoolSubscription.setPurchaseDate(LocalDateTime.now());
+        schoolSubscription.setEmail(school.getSchoolEmail());
+        schoolSubscription.setStatus(true);
+        schoolSubscription.setPhoneNo(school.getSchoolPhone());
+        schoolSubscription.setPrice(plans.getPrice());
+        subscriptionRepo.save(schoolSubscription);
         school.setPlans(plans);
         schoolRepo.save(school);
         plans.getSchool().add(school);
-        plans.setPurchaseDate(LocalDateTime.now());
+      //  plans.setPurchaseDate(LocalDateTime.now());
         plansRepo.save(plans);
         return ResponseClass.responseSuccess("Plan added successfully");
     }

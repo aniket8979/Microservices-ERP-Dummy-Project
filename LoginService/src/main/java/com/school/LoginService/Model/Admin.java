@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "admin")
+@Table
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -16,25 +16,26 @@ import lombok.Setter;
 public class Admin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long adminId;
 
-    private String schoolId;
-
-    @Column(unique = true)
+  //  @Column(unique = true)
     private String adminEmail;
 
     private String adminName;
 
     private String adminPhone;
-
     private String adminAddress;
 
     private String adminGender;
 
+    private String adminBlood;
+    private String adminPassword;
 
     private String adminPhoto;
 
-    private String adminRole = "ADMIN";
+    private String adminRole;
+
+
 
 }

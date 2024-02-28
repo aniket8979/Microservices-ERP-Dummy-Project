@@ -24,9 +24,15 @@ public class PlanController {
     }
 
     @GetMapping("/getAllPlan")
-    public ResponseEntity<?> getAllPlan()
+    public ResponseEntity<?> getAllPlan(@RequestParam(defaultValue = "",required = false) String key)
     {
-        return planService.getAllPlan();
+        return planService.getAllPlan(key);
+
+    }
+    @GetMapping("/getByPlanName")
+    public ResponseEntity<?> getByPlanName(@RequestParam String planName)
+    {
+        return planService.getByPlanName(planName);
 
     }
 

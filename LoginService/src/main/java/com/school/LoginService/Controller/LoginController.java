@@ -24,17 +24,17 @@ public class LoginController {
     private LoginService loginService;
 
     @Autowired
-    private AdminRepo superAdminRepo;
+    private AdminRepo adminRepo;
 
     @Autowired
     private JwtService jwtService;
 
 
-    @PostMapping("/all")
-    public ResponseEntity<HashMap<String, String>> loginUser(@RequestBody LoginModel loginDetail) {
-        HashMap<String,String> responsebody = loginService.loginGeneratetoken(loginDetail);
-        return ResponseEntity.ok(responsebody);
-    }
+//    @PostMapping("/all")
+//    public ResponseEntity<HashMap<String, String>> loginUser(@RequestBody LoginModel loginDetail) {
+//        HashMap<String,String> responsebody = loginService.loginGeneratetoken(loginDetail);
+//        return ResponseEntity.ok(responsebody);
+//    }
 
 
     @PostMapping("/setpassword")
@@ -44,7 +44,7 @@ public class LoginController {
     {
         HashMap<String, String> resp = new HashMap<>();
         System.out.println("Request Received: " +email);
-        System.out.println("password is received: " + passdata.getPassword());
+        System.out.println("password is not received: " + passdata.getPassword());
         String verified = (String) loginService.updatePassword(email, passdata.getPassword(), passdata.getOtp());
 
         if(verified.equals("password updated")){
@@ -57,18 +57,16 @@ public class LoginController {
         return ResponseEntity.ok(resp);
     }
 
-
-
-    @PostMapping("/getotp")
-    public ResponseEntity<?> setPassword(@RequestParam("email") String email){
-        if(!email.isEmpty()){
-            System.out.println(email);
-            System.out.println("OTP req received");
-            HashMap<String, String> updated = loginService.sendOtpAndIssueToken(email);
-            return ResponseEntity.ok(updated);
-        }
-        return ResponseEntity.ok("email not received");
-    }
+//    @PostMapping("/getotp")
+//    public ResponseEntity<?> setPassword(@RequestParam(value = "email") String email){
+//        if(!email.isEmpty()){
+//            System.out.println(email);
+//            System.out.println("OTP req received");
+//            HashMap<String, String> updated = loginService.sendOtpAndIssueToken(email);
+//            return ResponseEntity.ok(updated);
+//        }
+//        return ResponseEntity.ok("email not received");
+//    }
 
 
 

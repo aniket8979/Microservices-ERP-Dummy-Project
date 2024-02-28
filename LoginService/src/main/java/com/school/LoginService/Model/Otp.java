@@ -21,13 +21,9 @@ public class Otp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String email;
-
     private int otp;
-
     private LocalDateTime issue;
-
     private LocalDateTime expires;
 
 

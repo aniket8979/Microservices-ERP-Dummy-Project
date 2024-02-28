@@ -4,13 +4,12 @@ package com.school.LoginService.Repo;
 import com.school.LoginService.Model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AdminRepo extends JpaRepository<Admin, Integer> {
+public interface AdminRepo extends JpaRepository<Admin, Long> {
 
-    Admin getReferenceByAdminEmail(String email);
 
-    boolean existsBySchoolId(String schoolId);
+    Admin findByAdminEmail(String email);
 
-    boolean existsByAdminEmail(String adminEmail);
+    Admin findByAdminId(Long franchiseId);
 
-    Admin findByAdminEmail(String adminEmail);
+ //   boolean existsByuniqueId(String uniqueId);
 }

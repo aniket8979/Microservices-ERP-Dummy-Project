@@ -1,12 +1,14 @@
 package com.school.LoginService.Transient;
 
 
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -19,7 +21,7 @@ public class TeacherModel {
 
     private int id;
 
-    private String schoolId;
+    private String franchiseId;
 
     ////////////////////////////////////////////////////////////////
     public String userId;

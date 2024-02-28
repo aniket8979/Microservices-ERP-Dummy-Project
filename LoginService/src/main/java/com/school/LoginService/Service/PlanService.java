@@ -4,11 +4,9 @@ import com.school.LoginService.Exception.ResponseClass;
 import com.school.LoginService.Model.Plans;
 import com.school.LoginService.Repo.PlansRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,10 +33,19 @@ public class PlanService {
         return ResponseClass.responseSuccess("plan added successfully");
     }
 
-    public ResponseEntity<?> getAllPlan() {
+    public ResponseEntity<?> getAllPlan(String key) {
 
-        List<Plans> plans = plansRepo.findAll();
-        return ResponseClass.responseSuccess("all plans","plans",plans);
+        List<Plans> plans;
+        if(key.isBlank())
+        {
+            plans = plansRepo.findAll();
+            return ResponseClass.responseSuccess("all plans","plans",plans);
+        }
+        else {
+            plans = plansRepo.findPlansByPlanNameContainingIgnoreCaseOrFeaturesNameContainsIgnoreCase(key);
+            return ResponseClass.responseSuccess("all plans","plans",plans);
+        }
+
     }
 
     public ResponseEntity<?> getById(int planId) {
@@ -80,6 +87,18 @@ public class PlanService {
 
         plansRepo.delete(plans1);
         return ResponseClass.responseSuccess("plans delete successfully");
+
+    }
+
+    public ResponseEntity<?> getByPlanName(String planName) {
+
+        Plans plans = plansRepo.findPlansByPlanName(planName);
+        if(plans == null)
+        {
+            return  ResponseClass.responseFailure("package not found with this name");
+        }
+        return  ResponseClass.responseSuccess("plans ","package",planName);
+
 
     }
 }

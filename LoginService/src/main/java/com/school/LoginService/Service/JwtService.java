@@ -21,7 +21,7 @@ public class JwtService {
 
 
     @Autowired
-    private AdminRepo superAdminRepo;
+    private AdminRepo adminRepo;
 
 
     private static final String secret = "0ru239ry28fh2bf82f382382098302jf9nc20290fueoijvoe409nw439h384gun39ng398h39jg394j3mc3j9fj3";
@@ -31,12 +31,9 @@ public class JwtService {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-
-
-
-    public String generateToken(String franchiseId, String emailId, String roleType, String uniqueId){
+    public String generateToken(String franchiseId, String emailId, String roleType){
         Claims claims = Jwts.claims().setSubject(franchiseId);
-        claims.put("uniqueId", uniqueId);
+       // claims.put("uniqueId", uniqueId);
         claims.put("email",emailId);
         claims.put("roleType",roleType);
         return createToken(claims);
