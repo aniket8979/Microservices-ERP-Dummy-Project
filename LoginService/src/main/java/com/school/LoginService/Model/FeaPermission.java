@@ -1,5 +1,6 @@
 package com.school.LoginService.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class FeaPermission {
 
 
     @ManyToOne
+    @JsonIgnore
     private Features features;
 
 

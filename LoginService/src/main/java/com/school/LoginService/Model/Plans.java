@@ -1,5 +1,6 @@
 package com.school.LoginService.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -26,15 +27,24 @@ public class Plans {
         MONTHS,
         YEARS
     }
+
+
     private DurationType type;
+
+
+
+
+
     private int value;
     private int studentLimit;
     private boolean status;
-    private LocalDateTime purchaseDate;
+    //private LocalDateTime purchaseDate;
 
-    @OneToMany(mappedBy = "plans")
+
+    @OneToMany(mappedBy = "plans", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<School> school;
 
-    @OneToMany
+    @OneToMany(mappedBy = "plans", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Features> features;
 }
