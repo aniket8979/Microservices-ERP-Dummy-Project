@@ -14,7 +14,7 @@ public class RouteValidator {
             "/login/all",
             "admin/superadmin/register",
             "/eureka/**",
-            "/admin/**",
+            "/request/my-request",
             "/sch/addSchool"
     );
 

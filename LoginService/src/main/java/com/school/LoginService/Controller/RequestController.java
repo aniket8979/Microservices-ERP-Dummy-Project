@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/request")
+@RestController
 public class RequestController {
 
     @Autowired
@@ -51,6 +54,7 @@ public class RequestController {
 
     }
 
+
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteRequest(
             @RequestParam String reqId
@@ -61,7 +65,17 @@ public class RequestController {
         return ResponseClass.responseSuccess("request deleted");
     }
 
+    @GetMapping("/get")
+    public ResponseEntity<?> getById(@RequestParam String reqId){
+        RequestModel getrequest = requestsRepo.findByReqId(reqId);
+        return ResponseClass.responseSuccess("request data found", "request", getrequest);
+    }
 
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAll(){
+        List<RequestModel> allRequests = requestsRepo.findAll();
+        return ResponseClass.responseSuccess("request data found", "request", allRequests);
+    }
 
 
 
