@@ -66,7 +66,7 @@ public class SchoolService
     }
 
 
-    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String serviceId, MultipartFile schoolImage, int planId, String adminName, String gender, String bloodGrp, String adminAddress, String adminEmail, String adminPhone, String adminPassword, MultipartFile adminImage) {
+    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String serviceId, MultipartFile schoolImage, int planId, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
 
         School school = schoolRepo.findBySchoolId(serviceId);
 
@@ -115,8 +115,6 @@ public class SchoolService
         admin.setAdminGender(gender);
         admin.setAdminPhone(adminPhone);
         admin.setAdminAddress(adminAddress);
-        admin.setAdminPassword(adminPassword);
-        admin.setAdminBlood(bloodGrp);
         if (!adminImage.isEmpty()) {
             try {
                 byte[] bytes = adminImage.getBytes();
