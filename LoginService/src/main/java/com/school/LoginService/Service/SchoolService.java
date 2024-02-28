@@ -1,8 +1,17 @@
 package com.school.LoginService.Service;
 
 import com.school.LoginService.Exception.ResponseClass;
-import com.school.LoginService.Model.*;
-import com.school.LoginService.Repo.*;
+import com.school.LoginService.Model.Admin;
+import com.school.LoginService.Model.Features;
+import com.school.LoginService.Model.Plans;
+import com.school.LoginService.Model.School;
+import com.school.LoginService.Model.SchoolSubscription;
+import com.school.LoginService.Repo.AdminRepo;
+import com.school.LoginService.Repo.PlansRepo;
+import com.school.LoginService.Repo.SchoolRepo;
+import com.school.LoginService.Repo.SpecialFeaRepo;
+import com.school.LoginService.Repo.SubscriptionRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -57,18 +66,17 @@ public class SchoolService
 
     public ResponseEntity<?> deleteById(String schoolId) {
         School school = schoolRepo.findBySchoolId(schoolId);
-        if(school == null)
-        {
-            return  ResponseClass.responseFailure("wrong school id");
+        if (school == null) {
+            return ResponseClass.responseFailure("wrong school id");
         }
         schoolRepo.delete(school);
-        return  ResponseClass.responseSuccess("school deleted successfully");
+        return ResponseClass.responseSuccess("school deleted successfully");
     }
+    
 
+        public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, int planId, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
 
-    public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, int planId, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
-
-        School school = schoolRepo.findBySchoolId(serviceId);
+        School school = schoolRepo.findBySchoolId(schoolId);
 
         School school2 = schoolRepo.findBySchoolEmail(schoolEmail);
         School school1 = new School();
@@ -93,7 +101,7 @@ public class SchoolService
         school1.setSchoolAddress(schoolAddress);
         school1.setSchoolPhone(schoolPhone);
         school1.setDescription(schoolDis);
-        school1.setSchoolId(serviceId);
+        school1.setSchoolId(schoolId);
         school1.setPlans(plans);
         if (!schoolImage.isEmpty()) {
             try {
@@ -130,7 +138,7 @@ public class SchoolService
         }
 
         SchoolSubscription schoolSubscription = new SchoolSubscription();
-        schoolSubscription.setSchoolId(serviceId);
+        schoolSubscription.setSchoolId(schoolId);
         schoolSubscription.setPlan(planId);
         schoolSubscription.setPurchaseDate(LocalDateTime.now());
         schoolSubscription.setEmail(schoolEmail);
@@ -194,28 +202,25 @@ public class SchoolService
         School school = schoolRepo.findBySchoolId(schoolId);
         List<Features> features = specialFeaRepo.findFeaturesBySchool_SchoolId(schoolId);
 
-        if(school == null)
-        {
-            return  ResponseClass.responseFailure("wrong school Id");
+        if (school == null) {
+
+            return ResponseClass.responseFailure("wrong school Id");
         }
-        return ResponseClass.responseSuccess("All Features",school.getSchoolName(),features);
+        return ResponseClass.responseSuccess("All Features", school.getSchoolName(), features);
 
 
     }
-
+    
     public ResponseEntity<?> addPlanInSchool(String schoolId, int planId) {
 
         School school = schoolRepo.findBySchoolId(schoolId);
-        if(school == null)
-        {
-            return  ResponseClass.responseFailure("wrong school Id");
+        if (school == null) {
+            return ResponseClass.responseFailure("wrong school Id");
         }
 
-
         Plans plans = plansRepo.findPlansByPlanId(planId);
-        if(plans == null)
-        {
-            return  ResponseClass.responseFailure("wrong plan Id");
+        if (plans == null) {
+            return ResponseClass.responseFailure("wrong plan Id");
         }
         SchoolSubscription schoolSubscription = new SchoolSubscription();
         schoolSubscription.setSchoolId(schoolId);
@@ -229,11 +234,11 @@ public class SchoolService
         school.setPlans(plans);
         schoolRepo.save(school);
         plans.getSchool().add(school);
-      //  plans.setPurchaseDate(LocalDateTime.now());
+        //  plans.setPurchaseDate(LocalDateTime.now());
         plansRepo.save(plans);
         return ResponseClass.responseSuccess("Plan added successfully");
     }
-
+    
     public ResponseEntity<?> getPerSchool(String schoolId) {
 
         School school = schoolRepo.findBySchoolId(schoolId);

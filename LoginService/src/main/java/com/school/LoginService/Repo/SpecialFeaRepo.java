@@ -10,8 +10,8 @@ public interface SpecialFeaRepo extends JpaRepository<Features,Integer> {
 
     Features findByFeatureId(int id);
 
-    List<Features>  findByPlans_PlanId(int planId);
-
+    List<Features> findByPlans_PlanId(int planId);
+    
     Features findFeaturesByFeatureName(String name);
 
     List<Features> findFeaturesBySchool_SchoolId(String schoolId);
