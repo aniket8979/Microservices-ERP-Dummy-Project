@@ -10,5 +10,6 @@ public interface OtpRepo extends JpaRepository<Otp, Integer> {
     void deleteByemail(String email);
 
     void deleteAllByemail(String email);
+    List<Otp> findAllByEmail(String email);
 
 }
