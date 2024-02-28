@@ -18,7 +18,7 @@ public class AuthConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/login/**", "/admin/**", "/sch/**","/plan/**","/fea/**","/per/**","/subs/**","/swagger-ui/index.html").permitAll()
+                .requestMatchers("/login/**", "/admin/**", "/sch/**","/plan/**","/fea/**","/per/**","/subs/**","/request/**","/swagger-ui/index.html").permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
