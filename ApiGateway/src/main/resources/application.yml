@@ -36,7 +36,7 @@ spring:
         - id: login-service
           uri: lb://login-service
           predicates:
-            - Path=/login/**, /admin/**, /sch/**, /request/**
+             - Path=/login/**, /admin/**,/sch/**,/admin/**,/plan/**,/fea/**,/per/**,/subs/**,/swagger-ui/index.html/
           filters:
             - AuthenticationFilter
 
