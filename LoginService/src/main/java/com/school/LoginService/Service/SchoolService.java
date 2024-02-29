@@ -74,7 +74,7 @@ public class SchoolService
     }
     
 
-        public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, String schoolId, MultipartFile schoolImage, int planId, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
+        public ResponseEntity<?> saveSchool(String schoolName, String schoolAddress, String schoolEmail, String schoolPhone, String schoolDis, int planId ,String schoolId, MultipartFile schoolImage, String adminName, String gender, String adminAddress, String adminEmail, String adminPhone, MultipartFile adminImage) {
 
         School school = schoolRepo.findBySchoolId(schoolId);
 
