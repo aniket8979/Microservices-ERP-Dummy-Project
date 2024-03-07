@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 
 @Component
@@ -110,14 +111,39 @@ public class UtilitiesService {
                 System.out.println("checking if it is null "+uniqueId);
                 newuser.setUserId(uniqueId);
                 loginRepo.save(newuser);
-                return jwtService.generateToken(email, "random String", roleType, "None" );
+                return jwtService.generateToken("None", email , roleType, "None" );
             }
-            return jwtService.generateToken(email, "random String", roleType, "None");
+            return jwtService.generateToken("None" , email, roleType, "None");
         }
 
         return "notSent";
 
     }
+
+    public String generateString(int length){
+        // Set of characters to choose from
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+        // Create a StringBuilder to store the random string
+        StringBuilder randomString = new StringBuilder();
+
+        // Create a Random object
+        Random random = new Random();
+
+        // Generate the random string
+        for (int i = 0; i < length; i++) {
+            // Get a random index from the alphabet
+            int index = random.nextInt(alphabet.length());
+
+            // Append the randomly selected character to the StringBuilder
+            randomString.append(alphabet.charAt(index));
+        }
+
+        // Print the generated random string
+        return randomString.toString();
+    }
+
+
 
 
 

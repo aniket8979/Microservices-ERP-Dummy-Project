@@ -21,7 +21,7 @@ public interface TeacherRepo extends JpaRepository<TeacherModel, Integer > {
     TeacherModel getReferenceByemail(String email);
 
 
-    List<TeacherModel> findAllByfranchiseId(String franchiseId);
+    List<TeacherModel> findAllBySchoolId(String schoolId);
 
     boolean existsByuserId(String userId);
 }

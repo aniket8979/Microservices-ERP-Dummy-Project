@@ -34,10 +34,10 @@ public class JwtService {
 
 
 
-    public String generateToken(String franchiseId, String emailId, String roleType, String uniqueId){
-        Claims claims = Jwts.claims().setSubject(franchiseId);
-        claims.put("uniqueId", uniqueId);
-        claims.put("email",emailId);
+    public String generateToken(String schoolId, String email, String roleType, String userId){
+        Claims claims = Jwts.claims().setSubject(schoolId);
+        claims.put("userId", userId);
+        claims.put("email",email);
         claims.put("roleType",roleType);
         return createToken(claims);
     }

@@ -1,5 +1,7 @@
 package com.school.LoginService.Service;
 
+import com.school.LoginService.Exception.BadRequestException;
+import com.school.LoginService.Exception.ResponseClass;
 import com.school.LoginService.FeignService.StaffServiceFeign;
 import com.school.LoginService.FeignService.StudentServiceFeign;
 import com.school.LoginService.Model.LoginModel;
@@ -10,7 +12,9 @@ import com.school.LoginService.Repo.OtpRepo;
 import com.school.LoginService.Repo.AdminRepo;
 import com.school.LoginService.Transient.StudentModel;
 import com.school.LoginService.Transient.TeacherModel;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,34 +93,53 @@ public class LoginService {
     }
 
 
+    /* This method was created to handle logic related to password
+    * it is commented because it is no longer required in present scenario
+    * but is kept for future reference
+    */
 
-    public String updatePassword(String email, String password, int otp){
+//    public String updatePassword(String email, String password, int otp){
+//        LocalDateTime now = LocalDateTime.now();
+//        System.out.println(email);
+//
+//        Otp verify = otpRepo.getReferenceByemail(email);
+//
+//        if(verify != null){
+//            if(verify.getOtp() == otp){
+//
+//                if(verify.getExpires().isBefore(now)){
+//                    return "otp expired";
+//                }else{
+//                    LoginModel user = loginRepo.getReferenceByemail(email);
+//                    if(user != null){
+//
+//                        user.setPassword(passwordEncoder.encode(password));
+//                        loginRepo.save(user);
+//                        return "password updated";
+//                    }else {
+//                        System.out.println("user is null in login Repo");
+//                    }
+//                    return "user not found";
+//                }
+//            }
+//            return "otp invalid";
+//        }
+//        return "user not found";
+//    }
+
+
+
+
+    public boolean updatePassword(String password, String email){
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(email);
-
-        Otp verify = otpRepo.getReferenceByemail(email);
-
-        if(verify != null){
-            if(verify.getOtp() == otp){
-
-                if(verify.getExpires().isBefore(now)){
-                    return "otp expired";
-                }else{
-                    LoginModel user = loginRepo.getReferenceByemail(email);
-                    if(user != null){
-
-                        user.setPassword(passwordEncoder.encode(password));
-                        loginRepo.save(user);
-                        return "password updated";
-                    }else {
-                        System.out.println("user is null in login Repo");
-                    }
-                    return "user not found";
-                }
-            }
-            return "otp invalid";
+        LoginModel user = loginRepo.getReferenceByemail(email);
+        if(user != null){
+            user.setPassword(passwordEncoder.encode(password));
+            loginRepo.save(user);
+            return true;
+        }else {
+            throw new BadRequestException("User not found");
         }
-        return "user not found";
     }
 
 
@@ -204,4 +227,51 @@ public class LoginService {
     }
 
 
+
+    public boolean verifyotp(String email, int otp) {
+        System.out.println("this is email"+email);
+        Otp curOtp = otpRepo.findByEmail(email);
+        System.out.println("this is OTP "+otp+ " "+curOtp.getOtp());
+        return curOtp.getOtp()==otp;
+    }
+
+
+
+
+    @Transactional
+    public ResponseEntity<?> generatePassword(String email, int otp_mobile) {
+
+        boolean verified = verifyotp(email, otp_mobile);
+        if(verified){
+            String password = utilitiesService.generateString(10);
+            LoginModel userLogin = loginRepo.findByemail(email);
+            userLogin.setPassword(passwordEncoder.encode(password));
+            loginRepo.save(userLogin);
+            boolean mailSent = utilitiesService.sendEmail(email,
+                    "new password",
+                    "This is your newly generated password, you can change it from inside the setting penal of applicaltion : "+ password);
+            if(mailSent) {
+                return ResponseClass.responseSuccess("password sent to email");
+            }
+            return ResponseClass.responseFailure("unable to generate passowrd");
+        }
+        return ResponseClass.responseFailure("invalid otp");
+    }
+
+
+    public ResponseEntity<?> changeMobilePassword(
+            String email,
+            String schoolId,
+            String userId,
+            String roleType,
+            String password)
+    {
+        LoginModel userLoginInfo = loginRepo.findByemail(email);
+        if(userLoginInfo.getSchoolId().equals(schoolId)){
+            userLoginInfo.setPassword(passwordEncoder.encode(password));
+            loginRepo.save(userLoginInfo);
+            return ResponseClass.responseSuccess("password changed");
+        }
+        return ResponseClass.responseFailure("failure");
+    }
 }

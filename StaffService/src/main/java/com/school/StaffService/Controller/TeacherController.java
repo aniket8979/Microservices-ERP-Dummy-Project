@@ -5,11 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.StaffService.DTO.TeacherDTO;
 import com.school.StaffService.Exception.BadRequestException;
-import com.school.StaffService.Exception.GlobalExceptionHandler;
 import com.school.StaffService.Exception.ResponseClass;
 import com.school.StaffService.FeignService.ClassGradeFeign;
 import com.school.StaffService.Model.Document;
-import com.school.StaffService.Model.Roles;
 import com.school.StaffService.Model.TeacherModel;
 import com.school.StaffService.Repo.AllRoleRepo;
 import com.school.StaffService.Repo.DocRepo;
@@ -104,7 +102,7 @@ public class TeacherController {
             if(found){
                 throw new BadRequestException("Staff with this Email Already Exist");
             }else {
-                userdata.setFranchiseId(franchiseId);
+                userdata.setSchoolId(franchiseId);
             }
 
 
@@ -188,7 +186,7 @@ public class TeacherController {
             if(found){
                 throw new BadRequestException("Staff with this Email Already Exist");
             }else {
-                userdata.setFranchiseId(franchiseId);
+                userdata.setSchoolId(franchiseId);
             }
 
 
@@ -234,7 +232,7 @@ public class TeacherController {
             @RequestHeader("roleType") String roleType)
     {
         if(roleType.equals("ADMIN")){
-            List<TeacherModel> allStaff = teacherRepo.findAllByfranchiseId(franchiseid);
+            List<TeacherModel> allStaff = teacherRepo.findAllBySchoolId(franchiseid);
             return ResponseClass.responseSuccess("all staff data", "allStaff", allStaff);
         }
         return ResponseClass.responseFailure("access denied");
@@ -253,7 +251,7 @@ public class TeacherController {
             if(nn == null){
                 return ResponseClass.responseFailure("user not found");
             }
-            if(franchiseId.equals(nn.getFranchiseId())){
+            if(franchiseId.equals(nn.getSchoolId())){
                 return ResponseEntity.ok(nn);
             }
             throw new BadRequestException("invalid Id");

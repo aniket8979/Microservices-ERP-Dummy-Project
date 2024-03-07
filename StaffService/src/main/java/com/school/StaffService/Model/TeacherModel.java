@@ -30,7 +30,7 @@ public class TeacherModel {
 
     ////////////////////////////////////////////////////////////////
 
-    private String franchiseId;
+    private String schoolId;
 
     private String userId;
 

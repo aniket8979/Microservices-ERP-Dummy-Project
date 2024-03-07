@@ -94,10 +94,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
         exchange.getRequest()
                 .mutate()
-                .header("uniqueId", String.valueOf(claim.get("uniqueId")))
-                .header("franchiseId", String.valueOf(claim.getSubject()))
+                .header("schoolId", String.valueOf(claim.getSubject()))
                 .header("email", String.valueOf(claim.get("email")))
                 .header("roleType", String.valueOf(claim.get("roleType")))
+                .header("userId", String.valueOf(claim.get("userId")))
                 .build();
     }
 

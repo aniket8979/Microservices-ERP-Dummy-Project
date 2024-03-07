@@ -31,7 +31,7 @@ public class Roles {
     @Column(name = "role")
     private String role;
 
-    private String roleType;
+    private String roleType = "USER";
 
 
 }
